@@ -555,57 +555,6 @@ flanger.Rate =
 flanger.Parent =
 	musicPlayer
 
-local tremolo =
-	Instance.new("TremoloSoundEffect")
-
-tremolo.Depth =
-	0
-
-tremolo.Duty =
-	0.5
-
-tremolo.Frequency =
-	5
-
-tremolo.Parent =
-	musicPlayer
-
-local equalizer =
-	Instance.new("EqualizerSoundEffect")
-
-equalizer.LowGain =
-	0
-
-equalizer.MidGain =
-	0
-
-equalizer.HighGain =
-	0
-
-equalizer.Parent =
-	musicPlayer
-
-local compressor =
-	Instance.new("CompressorSoundEffect")
-
-compressor.Threshold =
-	-50
-
-compressor.Ratio =
-	1
-
-compressor.Attack =
-	0.01
-
-compressor.Release =
-	0.1
-
-compressor.GainMakeup =
-	0
-
-compressor.Parent =
-	musicPlayer
-
 --==================================================
 -- AUDIO STATE
 --==================================================
@@ -613,7 +562,6 @@ compressor.Parent =
 local loadedAudioId = ""
 local musicActive = false
 local playing = false
-local loopEnabled = true
 
 --==================================================
 -- GAME AUDIO
@@ -664,13 +612,136 @@ studioGui.IgnoreGuiInset =
 	true
 
 studioGui.ZIndexBehavior =
-	Enum.ZIndexBehavior.Sibling
+	Enum.ZIndexBehavior.Global
+
+studioGui.DisplayOrder =
+	0
 
 studioGui.Parent =
 	playerGui
 
 --==================================================
--- FULL WIDTH BOTTOM AREA
+-- BLUE BACKGROUND
+--==================================================
+
+local blueBackground =
+	Instance.new("Frame")
+
+blueBackground.Name =
+	"C9HZZBlueBackground"
+
+blueBackground.Size =
+	UDim2.new(
+		1, 0,
+		1, 0
+	)
+
+blueBackground.Position =
+	UDim2.new(
+		0, 0,
+		0, 0
+	)
+
+blueBackground.BackgroundColor3 =
+	Color3.fromRGB(
+		25,
+		60,
+		125
+	)
+
+blueBackground.BackgroundTransparency =
+	0
+
+blueBackground.BorderSizePixel =
+	0
+
+blueBackground.ZIndex =
+	0
+
+blueBackground.Visible =
+	true
+
+blueBackground.Parent =
+	studioGui
+
+--==================================================
+-- HIDE BACKGROUND / MOON / SUN
+--==================================================
+
+for _, obj in ipairs(
+	mainUI:GetDescendants()
+) do
+
+	local lowerName =
+		string.lower(
+			obj.Name
+		)
+
+	if lowerName == "background"
+		or lowerName == "moon"
+		or lowerName == "sun" then
+
+		if obj:IsA("GuiObject") then
+			obj.Visible = false
+		end
+	end
+end
+
+--==================================================
+-- GAME BUTTONS
+--==================================================
+
+for _, buttonName in ipairs({
+	"GameButton1",
+	"GameButton2",
+	"GameButton3"
+}) do
+
+	local button =
+		mainUI:FindFirstChild(
+			buttonName,
+			true
+		)
+
+	if button
+		and button:IsA("GuiObject") then
+
+		button.Visible =
+			false
+	end
+end
+
+--==================================================
+-- OUTER BASEHOLDER CLEANUP
+--==================================================
+
+local outerBaseHolder =
+	mainUI:FindFirstChild(
+		"BaseHolder"
+	)
+
+if outerBaseHolder then
+
+	local outerBaseFrame =
+		outerBaseHolder:FindFirstChild(
+			"BaseFrame"
+		)
+
+	if outerBaseFrame then
+
+		for _, obj in ipairs(
+			outerBaseFrame:GetDescendants()
+		) do
+
+			if obj:IsA("ImageButton") then
+				obj:Destroy()
+			end
+		end
+	end
+end
+
+--==================================================
+-- MAIN STUDIO
 --==================================================
 
 local studio =
@@ -679,6 +750,7 @@ local studio =
 studio.Name =
 	"AudioStudio"
 
+-- FULL HORIZONTAL WIDTH
 studio.Size =
 	UDim2.new(
 		1, 0,
@@ -708,11 +780,14 @@ studio.BorderColor3 =
 		20
 	)
 
+studio.ZIndex =
+	100
+
 studio.Parent =
 	studioGui
 
 --==================================================
--- WINDOWS-STYLE TOP BAR
+-- WINDOWS TITLE BAR
 --==================================================
 
 local titleBar =
@@ -769,6 +844,9 @@ titleBar.TextXAlignment =
 titleBar.AutoButtonColor =
 	false
 
+titleBar.ZIndex =
+	101
+
 titleBar.Parent =
 	studio
 
@@ -785,7 +863,7 @@ titlePadding.Parent =
 	titleBar
 
 --==================================================
--- WINDOW BUTTONS
+-- CLOSE BUTTON
 --==================================================
 
 local closeButton =
@@ -838,6 +916,9 @@ closeButton.TextSize =
 closeButton.Font =
 	Enum.Font.Code
 
+closeButton.ZIndex =
+	102
+
 closeButton.Parent =
 	studio
 
@@ -849,80 +930,73 @@ local dragging = false
 local dragStart
 local startPosition
 
-titleBar.InputBegan:Connect(function(input)
+titleBar.InputBegan:Connect(
+	function(input)
 
-	if input.UserInputType ==
-		Enum.UserInputType.MouseButton1
-		or input.UserInputType ==
-		Enum.UserInputType.Touch then
+		if input.UserInputType ==
+			Enum.UserInputType.MouseButton1
+			or input.UserInputType ==
+			Enum.UserInputType.Touch then
 
-		dragging =
-			true
+			dragging =
+				true
 
-		dragStart =
-			input.Position
+			dragStart =
+				input.Position
 
-		startPosition =
-			studio.Position
+			startPosition =
+				studio.Position
+		end
 	end
-end)
+)
 
-titleBar.InputEnded:Connect(function(input)
+titleBar.InputEnded:Connect(
+	function(input)
 
-	if input.UserInputType ==
-		Enum.UserInputType.MouseButton1
-		or input.UserInputType ==
-		Enum.UserInputType.Touch then
+		if input.UserInputType ==
+			Enum.UserInputType.MouseButton1
+			or input.UserInputType ==
+			Enum.UserInputType.Touch then
 
-		dragging =
-			false
+			dragging =
+				false
+		end
 	end
-end)
+)
 
-UserInputService.InputChanged:Connect(function(input)
+UserInputService.InputChanged:Connect(
+	function(input)
 
-	if not dragging then
-		return
+		if not dragging then
+			return
+		end
+
+		if input.UserInputType ~=
+			Enum.UserInputType.MouseMovement
+			and input.UserInputType ~=
+			Enum.UserInputType.Touch then
+
+			return
+		end
+
+		local delta =
+			input.Position -
+			dragStart
+
+		studio.Position =
+			UDim2.new(
+				startPosition.X.Scale,
+				startPosition.X.Offset +
+					delta.X,
+				startPosition.Y.Scale,
+				startPosition.Y.Offset +
+					delta.Y
+			)
 	end
-
-	if input.UserInputType ~=
-		Enum.UserInputType.MouseMovement
-		and input.UserInputType ~=
-		Enum.UserInputType.Touch then
-
-		return
-	end
-
-	local delta =
-		input.Position -
-		dragStart
-
-	studio.Position =
-		UDim2.new(
-			startPosition.X.Scale,
-			startPosition.X.Offset +
-				delta.X,
-
-			startPosition.Y.Scale,
-			startPosition.Y.Offset +
-				delta.Y
-		)
-
-end)
-
-closeButton.Activated:Connect(function()
-
-	musicActive =
-		false
-
-	musicPlayer:Stop()
-
-	studio.Visible =
-		false
-end)
+)
 
 --==================================================
--- INNER WORK AREA
+-- WORK AREA
 --==================================================
 
 local workArea =
@@ -961,11 +1035,14 @@ workArea.BorderColor3 =
 		100
 	)
 
+workArea.ZIndex =
+	101
+
 workArea.Parent =
 	studio
 
 --==================================================
--- LEFT SOURCE PANEL
+-- LEFT PANEL
 --==================================================
 
 local sourcePanel =
@@ -1004,11 +1081,14 @@ sourcePanel.BorderColor3 =
 		255
 	)
 
+sourcePanel.ZIndex =
+	102
+
 sourcePanel.Parent =
 	workArea
 
 --==================================================
--- CENTER VISUALIZER PANEL
+-- CENTER PANEL
 --==================================================
 
 local visualPanel =
@@ -1047,11 +1127,14 @@ visualPanel.BorderColor3 =
 		255
 	)
 
+visualPanel.ZIndex =
+	102
+
 visualPanel.Parent =
 	workArea
 
 --==================================================
--- RIGHT CONTROL PANEL
+-- RIGHT PANEL
 --==================================================
 
 local controlPanel =
@@ -1090,11 +1173,14 @@ controlPanel.BorderColor3 =
 		255
 	)
 
+controlPanel.ZIndex =
+	102
+
 controlPanel.Parent =
 	workArea
 
 --==================================================
--- HELPERS
+-- UI HELPERS
 --==================================================
 
 local function winLabel(
@@ -1103,7 +1189,8 @@ local function winLabel(
 	x,
 	y,
 	w,
-	h
+	h,
+	z
 )
 
 	local label =
@@ -1142,6 +1229,9 @@ local function winLabel(
 
 	label.TextXAlignment =
 		Enum.TextXAlignment.Left
+
+	label.ZIndex =
+		z or 104
 
 	label.Parent =
 		parent
@@ -1218,6 +1308,9 @@ local function winBox(
 	box.ClearTextOnFocus =
 		false
 
+	box.ZIndex =
+		105
+
 	box.Parent =
 		parent
 
@@ -1291,6 +1384,9 @@ local function winButton(
 
 	button.Font =
 		Enum.Font.Code
+
+	button.ZIndex =
+		105
 
 	button.Parent =
 		parent
@@ -1445,6 +1541,9 @@ visualizer.BorderColor3 =
 visualizer.ClipsDescendants =
 	true
 
+visualizer.ZIndex =
+	103
+
 visualizer.Parent =
 	visualPanel
 
@@ -1476,6 +1575,9 @@ waveformLine.BackgroundColor3 =
 
 waveformLine.BorderSizePixel =
 	0
+
+waveformLine.ZIndex =
+	104
 
 waveformLine.Parent =
 	visualizer
@@ -1522,6 +1624,9 @@ for i = 1, BAR_COUNT do
 
 	bar.BorderSizePixel =
 		0
+
+	bar.ZIndex =
+		104
 
 	bar.Parent =
 		visualizer
@@ -1576,6 +1681,9 @@ progressBackground.BackgroundColor3 =
 progressBackground.BorderSizePixel =
 	1
 
+progressBackground.ZIndex =
+	103
+
 progressBackground.Parent =
 	visualPanel
 
@@ -1600,6 +1708,9 @@ progressFill.BackgroundColor3 =
 progressFill.BorderSizePixel =
 	0
 
+progressFill.ZIndex =
+	104
+
 progressFill.Parent =
 	progressBackground
 
@@ -1609,7 +1720,7 @@ local visualStatus =
 		"NO TRACK LOADED",
 		10,
 		200,
-		300,
+		350,
 		20
 	)
 
@@ -1621,7 +1732,7 @@ visualStatus.TextColor3 =
 	)
 
 --==================================================
--- SIMPLE CONTROLS
+-- RIGHT SIMPLE CONTROLS
 --==================================================
 
 winLabel(
@@ -1742,80 +1853,7 @@ local resetButton =
 	)
 
 --==================================================
--- EFFECTS
---==================================================
-
-local reverb =
-	Instance.new("ReverbSoundEffect")
-
-reverb.DecayTime =
-	1.5
-
-reverb.Density =
-	1
-
-reverb.Diffusion =
-	1
-
-reverb.DryLevel =
-	0
-
-reverb.WetLevel =
-	-80
-
-reverb.Parent =
-	musicPlayer
-
-local echo =
-	Instance.new("EchoSoundEffect")
-
-echo.Delay =
-	0.5
-
-echo.Feedback =
-	0
-
-echo.DryLevel =
-	0
-
-echo.WetLevel =
-	-80
-
-echo.Parent =
-	musicPlayer
-
-local chorus =
-	Instance.new("ChorusSoundEffect")
-
-chorus.Depth =
-	0
-
-chorus.Mix =
-	0
-
-chorus.Rate =
-	0.5
-
-chorus.Parent =
-	musicPlayer
-
-local flanger =
-	Instance.new("FlangeSoundEffect")
-
-flanger.Depth =
-	0
-
-flanger.Mix =
-	0
-
-flanger.Rate =
-	0.5
-
-flanger.Parent =
-	musicPlayer
-
---==================================================
--- NUMERIC HELPERS
+-- SIMPLE EFFECTS
 --==================================================
 
 local function number(
@@ -1894,7 +1932,6 @@ local function applyControls()
 				0,
 				musicPlayer.TimeLength
 			)
-
 	end
 
 	musicPlayer.TimePosition =
@@ -1941,18 +1978,6 @@ resetButton.Activated:Connect(
 
 		timeBox.Text =
 			"0"
-
-		reverb.WetLevel =
-			-80
-
-		echo.WetLevel =
-			-80
-
-		chorus.Mix =
-			0
-
-		flanger.Mix =
-			0
 
 		applyControls()
 
@@ -2014,6 +2039,12 @@ local function loadAudio()
 			id
 	end
 
+	musicActive =
+		false
+
+	playing =
+		false
+
 	musicPlayer:Stop()
 
 	musicPlayer.SoundId =
@@ -2028,6 +2059,7 @@ local function loadAudio()
 	visualStatus.Text =
 		"CHECKING AUDIO..."
 
+	-- Keep the verification dialogue.
 	say(
 		"Checking the requested audio source.",
 		2
@@ -2037,10 +2069,6 @@ local function loadAudio()
 		"Contacting the audio source.",
 		2
 	)
-
-	--==================================================
-	-- WAIT FOR AUDIO LOAD
-	--==================================================
 
 	if not musicPlayer.IsLoaded then
 
@@ -2086,9 +2114,7 @@ local function loadAudio()
 		return false
 	end
 
-	task.wait(
-		0.25
-	)
+	task.wait(0.25)
 
 	if musicPlayer.TimeLength <= 0 then
 
@@ -2285,7 +2311,6 @@ progressBackground.InputBegan:Connect(
 		musicPlayer.TimePosition =
 			musicPlayer.TimeLength *
 			percentage
-
 	end
 )
 
@@ -2350,19 +2375,15 @@ RunService.RenderStepped:Connect(
 					loudness *
 					(
 						0.2 +
-						wave *
-						0.5 +
-						wave2 *
-						0.2
+						wave * 0.5 +
+						wave2 * 0.2
 					)
 
 			else
 
 				height =
 					0.04 +
-					wave *
-					0.04
-
+					wave * 0.04
 			end
 
 			height =
@@ -2374,8 +2395,7 @@ RunService.RenderStepped:Connect(
 
 			bar.Size =
 				UDim2.new(
-					1 / BAR_COUNT *
-						0.7,
+					1 / BAR_COUNT * 0.7,
 					0,
 					height,
 					0
@@ -2427,13 +2447,12 @@ RunService.RenderStepped:Connect(
 					1,
 					0
 				)
-
 		end
 	end
 )
 
 --==================================================
--- ENFORCE AUDIO OVERRIDE WHILE PLAYING
+-- AUDIO ENFORCER
 --==================================================
 
 local audioLock =
@@ -2451,7 +2470,6 @@ local audioLock =
 				and not musicPlayer.IsPaused then
 
 				musicPlayer:Play()
-
 			end
 		end
 	)
@@ -2460,9 +2478,7 @@ local audioLock =
 -- REVEAL
 --==================================================
 
-task.wait(
-	0.75
-)
+task.wait(0.75)
 
 local zoomOut =
 	TweenService:Create(

@@ -270,7 +270,7 @@ say(
 --==================================================
 
 say(
-	"Starting background audio.",
+	"Starting audio manipulation test.",
 	2
 )
 
@@ -280,7 +280,7 @@ level1.Looped = true
 level1:Play()
 
 say(
-	"Reducing background playback speed.",
+	"Reducing test audio playback speed.",
 	2
 )
 
@@ -322,7 +322,7 @@ volumeTween:Play()
 speedTween.Completed:Wait()
 
 say(
-	"Background audio initialized.",
+	"Test audio initialized.",
 	2
 )
 

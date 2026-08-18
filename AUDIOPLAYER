@@ -51,7 +51,9 @@ if not dialogueLabel then
 	return
 end
 
-if not characterVoice or not characterVoice:IsA("Sound") then
+if not characterVoice
+	or not characterVoice:IsA("Sound") then
+
 	warn("Character_Voice not found")
 	return
 end
@@ -101,6 +103,7 @@ end
 local function restoreGui()
 
 	for obj, state in pairs(lockedButtons) do
+
 		if obj and obj.Parent then
 			obj.Active = state.Active
 			obj.Selectable = state.Selectable
@@ -109,6 +112,7 @@ local function restoreGui()
 	end
 
 	for obj, state in pairs(lockedTextBoxes) do
+
 		if obj and obj.Parent then
 			obj.Active = state.Active
 			obj.TextEditable = state.TextEditable
@@ -138,6 +142,7 @@ local INPUT_LOCK_NAME =
 	"C9HZZ_AudioStudioInputLock"
 
 ContextActionService:BindActionAtPriority(
+
 	INPUT_LOCK_NAME,
 
 	function()
@@ -160,7 +165,7 @@ ContextActionService:BindActionAtPriority(
 )
 
 --==================================================
--- AUDIO INITIALIZATION
+-- INITIAL AUDIO
 --==================================================
 
 amb:Stop()
@@ -326,7 +331,7 @@ say(
 )
 
 say(
-	"Opening interface.",
+	"Opening the interface.",
 	2
 )
 
@@ -350,10 +355,16 @@ blackScreen.BorderSizePixel =
 	0
 
 blackScreen.Size =
-	UDim2.fromScale(1, 1)
+	UDim2.new(
+		1, 0,
+		1, 0
+	)
 
 blackScreen.Position =
-	UDim2.fromScale(0, 0)
+	UDim2.new(
+		0, 0,
+		0, 0
+	)
 
 blackScreen.ZIndex =
 	10000
@@ -390,7 +401,6 @@ if not zoomScale then
 		baseFrame
 
 	createdScale = true
-
 end
 
 local originalScale =
@@ -419,7 +429,8 @@ local blackIn =
 			Enum.EasingDirection.In
 		),
 		{
-			BackgroundTransparency = 0
+			BackgroundTransparency =
+				0
 		}
 	)
 
@@ -428,7 +439,8 @@ blackIn:Play()
 
 zoomIn.Completed:Wait()
 
-blackScreen.BackgroundTransparency = 0
+blackScreen.BackgroundTransparency =
+	0
 
 --==================================================
 -- MUSIC PLAYER
@@ -453,14 +465,11 @@ musicPlayer.Parent =
 	playerGui
 
 --==================================================
--- SOUND EFFECTS
+-- EFFECTS
 --==================================================
 
 local pitchShift =
 	Instance.new("PitchShiftSoundEffect")
-
-pitchShift.Name =
-	"PitchShift"
 
 pitchShift.Octave =
 	0
@@ -471,9 +480,6 @@ pitchShift.Parent =
 local distortion =
 	Instance.new("DistortionSoundEffect")
 
-distortion.Name =
-	"Distortion"
-
 distortion.Level =
 	0
 
@@ -482,9 +488,6 @@ distortion.Parent =
 
 local reverb =
 	Instance.new("ReverbSoundEffect")
-
-reverb.Name =
-	"Reverb"
 
 reverb.DecayTime =
 	1.5
@@ -507,9 +510,6 @@ reverb.Parent =
 local echo =
 	Instance.new("EchoSoundEffect")
 
-echo.Name =
-	"Echo"
-
 echo.Delay =
 	0.5
 
@@ -528,9 +528,6 @@ echo.Parent =
 local chorus =
 	Instance.new("ChorusSoundEffect")
 
-chorus.Name =
-	"Chorus"
-
 chorus.Depth =
 	0
 
@@ -545,9 +542,6 @@ chorus.Parent =
 
 local flanger =
 	Instance.new("FlangeSoundEffect")
-
-flanger.Name =
-	"Flanger"
 
 flanger.Depth =
 	0
@@ -564,9 +558,6 @@ flanger.Parent =
 local tremolo =
 	Instance.new("TremoloSoundEffect")
 
-tremolo.Name =
-	"Tremolo"
-
 tremolo.Depth =
 	0
 
@@ -582,9 +573,6 @@ tremolo.Parent =
 local equalizer =
 	Instance.new("EqualizerSoundEffect")
 
-equalizer.Name =
-	"Equalizer"
-
 equalizer.LowGain =
 	0
 
@@ -599,9 +587,6 @@ equalizer.Parent =
 
 local compressor =
 	Instance.new("CompressorSoundEffect")
-
-compressor.Name =
-	"Compressor"
 
 compressor.Threshold =
 	-50
@@ -625,29 +610,26 @@ compressor.Parent =
 -- AUDIO STATE
 --==================================================
 
+local loadedAudioId = ""
 local musicActive = false
 local playing = false
-local loadedAudioId = ""
-
 local loopEnabled = true
 
 --==================================================
--- GAME AUDIO SHUTDOWN
+-- GAME AUDIO
 --==================================================
-
-local soundsToDisable = {
-	"Amb",
-	"Level1",
-	"Level2",
-	"GameOver",
-	"Final"
-}
 
 local function stopGameSounds()
 
-	for _, name in ipairs(
-		soundsToDisable
-	) do
+	local names = {
+		"Amb",
+		"Level1",
+		"Level2",
+		"GameOver",
+		"Final"
+	}
+
+	for _, name in ipairs(names) do
 
 		local sound =
 			mainUI:FindFirstChild(
@@ -688,7 +670,7 @@ studioGui.Parent =
 	playerGui
 
 --==================================================
--- MAIN PANEL
+-- FULL WIDTH BOTTOM AREA
 --==================================================
 
 local studio =
@@ -697,100 +679,166 @@ local studio =
 studio.Name =
 	"AudioStudio"
 
-studio.AnchorPoint =
-	Vector2.new(
-		0.5,
-		1
+studio.Size =
+	UDim2.new(
+		1, 0,
+		0, 265
 	)
 
 studio.Position =
 	UDim2.new(
-		0.5,
-		0,
-		1,
-		-10
-	)
-
-studio.Size =
-	UDim2.new(
-		1,
-		-30,
-		0,
-		300
+		0, 0,
+		1, -265
 	)
 
 studio.BackgroundColor3 =
 	Color3.fromRGB(
-		9,
-		9,
-		9
+		192,
+		192,
+		192
 	)
 
 studio.BorderSizePixel =
-	0
+	2
+
+studio.BorderColor3 =
+	Color3.fromRGB(
+		20,
+		20,
+		20
+	)
 
 studio.Parent =
 	studioGui
 
-local studioCorner =
-	Instance.new("UICorner")
-
-studioCorner.CornerRadius =
-	UDim.new(
-		0,
-		8
-	)
-
-studioCorner.Parent =
-	studio
-
 --==================================================
--- HEADER
+-- WINDOWS-STYLE TOP BAR
 --==================================================
 
-local title =
+local titleBar =
 	Instance.new("TextButton")
 
-title.Size =
+titleBar.Size =
 	UDim2.new(
-		1,
-		-30,
+		1, 0,
+		0, 28
+	)
+
+titleBar.Position =
+	UDim2.new(
+		0, 0,
+		0, 0
+	)
+
+titleBar.BackgroundColor3 =
+	Color3.fromRGB(
 		0,
-		32
+		70,
+		140
 	)
 
-title.Position =
-	UDim2.fromOffset(
-		15,
-		8
-	)
-
-title.BackgroundTransparency =
+titleBar.BorderSizePixel =
 	1
 
-title.Text =
-	"C9HZZ  //  AUDIO STUDIO"
-
-title.TextColor3 =
+titleBar.BorderColor3 =
 	Color3.fromRGB(
 		255,
 		255,
 		255
 	)
 
-title.TextSize =
-	18
+titleBar.Text =
+	"C9HZZ AUDIO STUDIO"
 
-title.Font =
-	Enum.Font.GothamBold
+titleBar.TextColor3 =
+	Color3.fromRGB(
+		255,
+		255,
+		255
+	)
 
-title.TextXAlignment =
+titleBar.TextSize =
+	14
+
+titleBar.Font =
+	Enum.Font.Code
+
+titleBar.TextXAlignment =
 	Enum.TextXAlignment.Left
 
-title.AutoButtonColor =
+titleBar.AutoButtonColor =
 	false
 
-title.Parent =
+titleBar.Parent =
+	studio
+
+local titlePadding =
+	Instance.new("UIPadding")
+
+titlePadding.PaddingLeft =
+	UDim.new(
+		0,
+		8
+	)
+
+titlePadding.Parent =
+	titleBar
+
+--==================================================
+-- WINDOW BUTTONS
+--==================================================
+
+local closeButton =
+	Instance.new("TextButton")
+
+closeButton.Size =
+	UDim2.fromOffset(
+		25,
+		22
+	)
+
+closeButton.Position =
+	UDim2.new(
+		1,
+		-29,
+		0,
+		3
+	)
+
+closeButton.BackgroundColor3 =
+	Color3.fromRGB(
+		192,
+		192,
+		192
+	)
+
+closeButton.BorderSizePixel =
+	2
+
+closeButton.BorderColor3 =
+	Color3.fromRGB(
+		255,
+		255,
+		255
+	)
+
+closeButton.Text =
+	"X"
+
+closeButton.TextColor3 =
+	Color3.fromRGB(
+		0,
+		0,
+		0
+	)
+
+closeButton.TextSize =
+	12
+
+closeButton.Font =
+	Enum.Font.Code
+
+closeButton.Parent =
 	studio
 
 --==================================================
@@ -801,29 +849,33 @@ local dragging = false
 local dragStart
 local startPosition
 
-title.InputBegan:Connect(function(input)
+titleBar.InputBegan:Connect(function(input)
 
 	if input.UserInputType ==
 		Enum.UserInputType.MouseButton1
 		or input.UserInputType ==
 		Enum.UserInputType.Touch then
 
-		dragging = true
-		dragStart = input.Position
-		startPosition = studio.Position
+		dragging =
+			true
 
+		dragStart =
+			input.Position
+
+		startPosition =
+			studio.Position
 	end
 end)
 
-title.InputEnded:Connect(function(input)
+titleBar.InputEnded:Connect(function(input)
 
 	if input.UserInputType ==
 		Enum.UserInputType.MouseButton1
 		or input.UserInputType ==
 		Enum.UserInputType.Touch then
 
-		dragging = false
-
+		dragging =
+			false
 	end
 end)
 
@@ -850,6 +902,7 @@ UserInputService.InputChanged:Connect(function(input)
 			startPosition.X.Scale,
 			startPosition.X.Offset +
 				delta.X,
+
 			startPosition.Y.Scale,
 			startPosition.Y.Offset +
 				delta.Y
@@ -857,527 +910,580 @@ UserInputService.InputChanged:Connect(function(input)
 
 end)
 
+closeButton.Activated:Connect(function()
+
+	musicActive =
+		false
+
+	musicPlayer:Stop()
+
+	studio.Visible =
+		false
+end)
+
 --==================================================
--- PANELS
+-- INNER WORK AREA
 --==================================================
 
-local leftPanel =
+local workArea =
 	Instance.new("Frame")
 
-leftPanel.Size =
+workArea.Size =
 	UDim2.new(
-		0.25,
+		1,
 		-10,
 		1,
-		-55
+		-35
 	)
 
-leftPanel.Position =
-	UDim2.fromOffset(
-		10,
-		48
-	)
-
-leftPanel.BackgroundColor3 =
-	Color3.fromRGB(
-		15,
-		15,
-		15
-	)
-
-leftPanel.BorderSizePixel =
-	0
-
-leftPanel.Parent =
-	studio
-
-local leftCorner =
-	Instance.new("UICorner")
-
-leftCorner.CornerRadius =
-	UDim.new(
+workArea.Position =
+	UDim2.new(
 		0,
-		6
-	)
-
-leftCorner.Parent =
-	leftPanel
-
-local centerPanel =
-	Instance.new("Frame")
-
-centerPanel.Size =
-	UDim2.new(
-		0.48,
-		-10,
-		1,
-		-55
-	)
-
-centerPanel.Position =
-	UDim2.new(
-		0.25,
 		5,
 		0,
-		48
+		33
 	)
 
-centerPanel.BackgroundColor3 =
+workArea.BackgroundColor3 =
 	Color3.fromRGB(
-		12,
-		12,
-		12
+		220,
+		220,
+		220
 	)
 
-centerPanel.BorderSizePixel =
-	0
+workArea.BorderSizePixel =
+	2
 
-centerPanel.Parent =
+workArea.BorderColor3 =
+	Color3.fromRGB(
+		100,
+		100,
+		100
+	)
+
+workArea.Parent =
 	studio
 
-local centerCorner =
-	Instance.new("UICorner")
+--==================================================
+-- LEFT SOURCE PANEL
+--==================================================
 
-centerCorner.CornerRadius =
-	UDim.new(
-		0,
-		6
-	)
-
-centerCorner.Parent =
-	centerPanel
-
-local rightPanel =
+local sourcePanel =
 	Instance.new("Frame")
 
-rightPanel.Size =
+sourcePanel.Size =
 	UDim2.new(
-		0.27,
-		-10,
+		0.24,
+		-8,
 		1,
-		-55
+		-10
 	)
 
-rightPanel.Position =
+sourcePanel.Position =
 	UDim2.new(
-		0.73,
 		0,
+		5,
 		0,
-		48
+		5
 	)
 
-rightPanel.BackgroundColor3 =
+sourcePanel.BackgroundColor3 =
 	Color3.fromRGB(
-		15,
-		15,
-		15
+		192,
+		192,
+		192
 	)
 
-rightPanel.BorderSizePixel =
-	0
+sourcePanel.BorderSizePixel =
+	2
 
-rightPanel.Parent =
-	studio
+sourcePanel.BorderColor3 =
+	Color3.fromRGB(
+		255,
+		255,
+		255
+	)
 
-local rightCorner =
-	Instance.new("UICorner")
+sourcePanel.Parent =
+	workArea
 
-rightCorner.CornerRadius =
-	UDim.new(
+--==================================================
+-- CENTER VISUALIZER PANEL
+--==================================================
+
+local visualPanel =
+	Instance.new("Frame")
+
+visualPanel.Size =
+	UDim2.new(
+		0.52,
+		-8,
+		1,
+		-10
+	)
+
+visualPanel.Position =
+	UDim2.new(
+		0.24,
+		4,
 		0,
-		6
+		5
 	)
 
-rightCorner.Parent =
-	rightPanel
+visualPanel.BackgroundColor3 =
+	Color3.fromRGB(
+		35,
+		35,
+		35
+	)
+
+visualPanel.BorderSizePixel =
+	2
+
+visualPanel.BorderColor3 =
+	Color3.fromRGB(
+		255,
+		255,
+		255
+	)
+
+visualPanel.Parent =
+	workArea
+
+--==================================================
+-- RIGHT CONTROL PANEL
+--==================================================
+
+local controlPanel =
+	Instance.new("Frame")
+
+controlPanel.Size =
+	UDim2.new(
+		0.24,
+		-8,
+		1,
+		-10
+	)
+
+controlPanel.Position =
+	UDim2.new(
+		0.76,
+		3,
+		0,
+		5
+	)
+
+controlPanel.BackgroundColor3 =
+	Color3.fromRGB(
+		192,
+		192,
+		192
+	)
+
+controlPanel.BorderSizePixel =
+	2
+
+controlPanel.BorderColor3 =
+	Color3.fromRGB(
+		255,
+		255,
+		255
+	)
+
+controlPanel.Parent =
+	workArea
 
 --==================================================
 -- HELPERS
 --==================================================
 
-local function makeLabel(
+local function winLabel(
 	parent,
 	text,
 	x,
 	y,
 	w,
-	h,
-	size
+	h
 )
 
-	local l =
+	local label =
 		Instance.new("TextLabel")
 
-	l.Position =
+	label.Position =
 		UDim2.fromOffset(
 			x,
 			y
 		)
 
-	l.Size =
+	label.Size =
 		UDim2.fromOffset(
 			w,
 			h or 20
 		)
 
-	l.BackgroundTransparency =
+	label.BackgroundTransparency =
 		1
 
-	l.Text =
+	label.Text =
 		text
 
-	l.TextColor3 =
+	label.TextColor3 =
 		Color3.fromRGB(
-			165,
-			165,
-			165
+			0,
+			0,
+			0
 		)
 
-	l.TextSize =
-		size or 12
+	label.TextSize =
+		12
 
-	l.Font =
-		Enum.Font.GothamMedium
+	label.Font =
+		Enum.Font.Code
 
-	l.TextXAlignment =
+	label.TextXAlignment =
 		Enum.TextXAlignment.Left
 
-	l.Parent =
+	label.Parent =
 		parent
 
-	return l
+	return label
 end
 
-local function makeBox(
+local function winBox(
 	parent,
 	placeholder,
 	x,
 	y,
-	w,
-	h
+	w
 )
 
-	local b =
+	local box =
 		Instance.new("TextBox")
 
-	b.Position =
+	box.Position =
 		UDim2.fromOffset(
 			x,
 			y
 		)
 
-	b.Size =
+	box.Size =
 		UDim2.fromOffset(
 			w,
-			h or 30
-		)
-
-	b.BackgroundColor3 =
-		Color3.fromRGB(
-			25,
-			25,
 			25
 		)
 
-	b.BorderSizePixel =
-		0
-
-	b.PlaceholderText =
-		placeholder
-
-	b.Text =
-		""
-
-	b.TextColor3 =
+	box.BackgroundColor3 =
 		Color3.fromRGB(
 			255,
 			255,
 			255
 		)
 
-	b.PlaceholderColor3 =
+	box.BorderSizePixel =
+		2
+
+	box.BorderColor3 =
 		Color3.fromRGB(
-			95,
-			95,
-			95
+			80,
+			80,
+			80
 		)
 
-	b.TextSize =
+	box.PlaceholderText =
+		placeholder
+
+	box.Text =
+		""
+
+	box.TextColor3 =
+		Color3.fromRGB(
+			0,
+			0,
+			0
+		)
+
+	box.PlaceholderColor3 =
+		Color3.fromRGB(
+			100,
+			100,
+			100
+		)
+
+	box.TextSize =
 		12
 
-	b.Font =
-		Enum.Font.Gotham
+	box.Font =
+		Enum.Font.Code
 
-	b.ClearTextOnFocus =
+	box.ClearTextOnFocus =
 		false
 
-	b.Parent =
+	box.Parent =
 		parent
 
-	local c =
-		Instance.new("UICorner")
-
-	c.CornerRadius =
-		UDim.new(
-			0,
-			4
-		)
-
-	c.Parent =
-		b
-
-	local p =
+	local padding =
 		Instance.new("UIPadding")
 
-	p.PaddingLeft =
+	padding.PaddingLeft =
 		UDim.new(
 			0,
-			8
+			5
 		)
 
-	p.Parent =
-		b
+	padding.Parent =
+		box
 
-	return b
+	return box
 end
 
-local function makeButton(
+local function winButton(
 	parent,
 	text,
 	x,
 	y,
-	w,
-	h
+	w
 )
 
-	local b =
+	local button =
 		Instance.new("TextButton")
 
-	b.Position =
+	button.Position =
 		UDim2.fromOffset(
 			x,
 			y
 		)
 
-	b.Size =
+	button.Size =
 		UDim2.fromOffset(
 			w,
-			h or 30
+			25
 		)
 
-	b.BackgroundColor3 =
+	button.BackgroundColor3 =
 		Color3.fromRGB(
-			30,
-			30,
-			30
+			192,
+			192,
+			192
 		)
 
-	b.BorderSizePixel =
-		0
+	button.BorderSizePixel =
+		2
 
-	b.Text =
-		text
-
-	b.TextColor3 =
+	button.BorderColor3 =
 		Color3.fromRGB(
 			255,
 			255,
 			255
 		)
 
-	b.TextSize =
-		12
+	button.Text =
+		text
 
-	b.Font =
-		Enum.Font.GothamBold
-
-	b.Parent =
-		parent
-
-	local c =
-		Instance.new("UICorner")
-
-	c.CornerRadius =
-		UDim.new(
+	button.TextColor3 =
+		Color3.fromRGB(
 			0,
-			4
+			0,
+			0
 		)
 
-	c.Parent =
-		b
+	button.TextSize =
+		12
 
-	return b
+	button.Font =
+		Enum.Font.Code
+
+	button.Parent =
+		parent
+
+	return button
 end
 
 --==================================================
--- LEFT DECK
+-- SOURCE PANEL
 --==================================================
 
-makeLabel(
-	leftPanel,
-	"SOURCE",
+winLabel(
+	sourcePanel,
+	"AUDIO SOURCE",
 	10,
-	10,
-	150,
-	20,
-	11
+	8,
+	180,
+	18
 )
 
 local idBox =
-	makeBox(
-		leftPanel,
-		"Audio asset ID",
+	winBox(
+		sourcePanel,
+		"Asset ID",
 		10,
-		34,
-		185,
-		32
+		32,
+		180
 	)
 
 local loadButton =
-	makeButton(
-		leftPanel,
+	winButton(
+		sourcePanel,
 		"LOAD",
 		10,
-		73,
-		88,
-		30
+		64,
+		85
 	)
 
 local restartButton =
-	makeButton(
-		leftPanel,
+	winButton(
+		sourcePanel,
 		"RESTART",
-		107,
-		73,
-		88,
-		30
+		105,
+		64,
+		85
 	)
 
-makeLabel(
-	leftPanel,
-	"TRANSPORT",
-	10,
-	116,
-	150,
-	20,
-	11
-)
-
 local playButton =
-	makeButton(
-		leftPanel,
+	winButton(
+		sourcePanel,
 		"PLAY",
 		10,
-		140,
-		88,
-		30
+		96,
+		85
 	)
 
 local pauseButton =
-	makeButton(
-		leftPanel,
+	winButton(
+		sourcePanel,
 		"PAUSE",
-		107,
-		140,
-		88,
-		30
+		105,
+		96,
+		85
 	)
 
 local stopButton =
-	makeButton(
-		leftPanel,
+	winButton(
+		sourcePanel,
 		"STOP",
 		10,
-		177,
-		88,
-		30
+		128,
+		85
 	)
 
 local loopButton =
-	makeButton(
-		leftPanel,
+	winButton(
+		sourcePanel,
 		"LOOP: ON",
-		107,
-		177,
-		88,
-		30
+		105,
+		128,
+		85
 	)
 
 local status =
-	makeLabel(
-		leftPanel,
-		"READY",
+	winLabel(
+		sourcePanel,
+		"STATUS: READY",
 		10,
-		220,
-		185,
-		48,
-		11
+		170,
+		180,
+		70
 	)
 
-status.TextWrapped = true
+status.TextWrapped =
+	true
 
 --==================================================
 -- CENTER VISUALIZER
 --==================================================
 
-makeLabel(
-	centerPanel,
-	"SPECTRUM",
-	15,
-	10,
-	200,
-	20,
-	11
-)
+local visualTitle =
+	winLabel(
+		visualPanel,
+		"SPECTRUM / WAVEFORM",
+		10,
+		8,
+		300,
+		18
+	)
+
+visualTitle.TextColor3 =
+	Color3.fromRGB(
+		255,
+		255,
+		255
+	)
 
 local visualizer =
 	Instance.new("Frame")
 
 visualizer.Position =
 	UDim2.fromOffset(
-		15,
-		38
+		10,
+		32
 	)
 
 visualizer.Size =
 	UDim2.new(
 		1,
-		-30,
+		-20,
 		0,
-		115
+		110
 	)
 
 visualizer.BackgroundColor3 =
 	Color3.fromRGB(
-		8,
-		8,
-		8
+		5,
+		5,
+		5
 	)
 
 visualizer.BorderSizePixel =
-	0
+	1
+
+visualizer.BorderColor3 =
+	Color3.fromRGB(
+		100,
+		100,
+		100
+	)
 
 visualizer.ClipsDescendants =
 	true
 
 visualizer.Parent =
-	centerPanel
+	visualPanel
 
-local visualizerCorner =
-	Instance.new("UICorner")
+local waveformLine =
+	Instance.new("Frame")
 
-visualizerCorner.CornerRadius =
-	UDim.new(
+waveformLine.Size =
+	UDim2.new(
+		1,
+		-20,
 		0,
-		5
+		1
 	)
 
-visualizerCorner.Parent =
+waveformLine.Position =
+	UDim2.new(
+		0,
+		10,
+		0.5,
+		0
+	)
+
+waveformLine.BackgroundColor3 =
+	Color3.fromRGB(
+		90,
+		90,
+		90
+	)
+
+waveformLine.BorderSizePixel =
+	0
+
+waveformLine.Parent =
 	visualizer
 
 local bars = {}
 
-local BAR_COUNT = 48
+local BAR_COUNT =
+	64
 
 for i = 1, BAR_COUNT do
 
@@ -1392,15 +1498,16 @@ for i = 1, BAR_COUNT do
 
 	bar.Size =
 		UDim2.new(
-			1 / BAR_COUNT * 0.72,
+			1 / BAR_COUNT * 0.7,
 			0,
 			0,
-			8
+			5
 		)
 
 	bar.Position =
 		UDim2.new(
-			(i - 1) / BAR_COUNT,
+			(i - 1) /
+				BAR_COUNT,
 			0,
 			1,
 			-8
@@ -1425,108 +1532,69 @@ for i = 1, BAR_COUNT do
 	)
 end
 
-local waveformLine =
-	Instance.new("Frame")
-
-waveformLine.Size =
-	UDim2.new(
-		1,
-		-30,
-		0,
-		1
-	)
-
-waveformLine.Position =
-	UDim2.new(
-		0,
-		15,
-		0.5,
-		0
-	)
-
-waveformLine.BackgroundColor3 =
-	Color3.fromRGB(
-		55,
-		55,
-		55
-	)
-
-waveformLine.BorderSizePixel =
-	0
-
-waveformLine.Parent =
-	visualizer
-
---==================================================
--- TIME DISPLAY
---==================================================
-
 local timeDisplay =
-	makeLabel(
-		centerPanel,
+	winLabel(
+		visualPanel,
 		"00:00 / 00:00",
-		15,
-		163,
-		240,
-		24,
-		14
+		10,
+		150,
+		300,
+		22
 	)
 
 timeDisplay.TextColor3 =
 	Color3.fromRGB(
-		225,
-		225,
-		225
+		255,
+		255,
+		255
 	)
-
---==================================================
--- PROGRESS BAR
---==================================================
 
 local progressBackground =
 	Instance.new("Frame")
 
 progressBackground.Position =
 	UDim2.fromOffset(
-		15,
-		194
+		10,
+		178
 	)
 
 progressBackground.Size =
 	UDim2.new(
 		1,
-		-30,
+		-20,
 		0,
-		8
+		10
 	)
 
 progressBackground.BackgroundColor3 =
 	Color3.fromRGB(
-		35,
-		35,
-		35
+		70,
+		70,
+		70
 	)
 
 progressBackground.BorderSizePixel =
-	0
+	1
 
 progressBackground.Parent =
-	centerPanel
+	visualPanel
 
 local progressFill =
 	Instance.new("Frame")
 
 progressFill.Size =
-	UDim2.fromScale(
+	UDim2.new(
 		0,
-		1
+		0,
+		1,
+		0
 	)
 
 progressFill.BackgroundColor3 =
 	Color3.fromRGB(
-		210,
-		210,
-		210
+		235,
+		235,
+		235
 	)
 
 progressFill.BorderSizePixel =
@@ -1535,324 +1603,239 @@ progressFill.BorderSizePixel =
 progressFill.Parent =
 	progressBackground
 
+local visualStatus =
+	winLabel(
+		visualPanel,
+		"NO TRACK LOADED",
+		10,
+		200,
+		300,
+		20
+	)
+
+visualStatus.TextColor3 =
+	Color3.fromRGB(
+		255,
+		255,
+		255
+	)
+
 --==================================================
--- QUICK CONTROLS
+-- SIMPLE CONTROLS
 --==================================================
 
-makeLabel(
-	centerPanel,
-	"QUICK CONTROLS",
-	15,
-	216,
+winLabel(
+	controlPanel,
+	"PLAYBACK",
+	10,
+	8,
 	180,
-	20,
-	11
+	18
+)
+
+winLabel(
+	controlPanel,
+	"VOLUME",
+	10,
+	35,
+	70,
+	18
 )
 
 local volumeBox =
-	makeBox(
-		centerPanel,
-		"Volume 1.0",
-		15,
-		241,
-		105,
-		30
+	winBox(
+		controlPanel,
+		"1.0",
+		80,
+		32,
+		110
 	)
+
+winLabel(
+	controlPanel,
+	"SPEED",
+	10,
+	66,
+	70,
+	18
+)
 
 local speedBox =
-	makeBox(
-		centerPanel,
-		"Speed 1.0",
-		130,
-		241,
-		105,
-		30
+	winBox(
+		controlPanel,
+		"1.0",
+		80,
+		63,
+		110
 	)
+
+winLabel(
+	controlPanel,
+	"PITCH",
+	10,
+	97,
+	70,
+	18
+)
 
 local pitchBox =
-	makeBox(
-		centerPanel,
-		"Pitch 0",
-		245,
-		241,
-		105,
-		30
+	winBox(
+		controlPanel,
+		"0",
+		80,
+		94,
+		110
 	)
 
---==================================================
--- RIGHT PANEL
---==================================================
-
-makeLabel(
-	rightPanel,
-	"EFFECTS",
+winLabel(
+	controlPanel,
+	"DISTORTION",
 	10,
-	10,
-	180,
-	20,
-	11
+	128,
+	80,
+	18
 )
 
 local distortionBox =
-	makeBox(
-		rightPanel,
-		"Distortion 0",
-		10,
-		38,
-		120,
-		30
+	winBox(
+		controlPanel,
+		"0",
+		95,
+		125,
+		95
 	)
 
-local reverbBox =
-	makeBox(
-		rightPanel,
-		"Reverb -80",
-		140,
-		38,
-		120,
-		30
-	)
-
-local echoBox =
-	makeBox(
-		rightPanel,
-		"Echo -80",
-		10,
-		76,
-		120,
-		30
-	)
-
-local chorusBox =
-	makeBox(
-		rightPanel,
-		"Chorus 0",
-		140,
-		76,
-		120,
-		30
-	)
-
-local flangerBox =
-	makeBox(
-		rightPanel,
-		"Flanger 0",
-		10,
-		114,
-		120,
-		30
-	)
-
-local tremoloBox =
-	makeBox(
-		rightPanel,
-		"Tremolo 0",
-		140,
-		114,
-		120,
-		30
-	)
-
-makeLabel(
-	rightPanel,
-	"TIME POSITION",
+winLabel(
+	controlPanel,
+	"TIME POS",
 	10,
-	156,
-	120,
-	20,
-	11
+	159,
+	70,
+	18
 )
 
 local timeBox =
-	makeBox(
-		rightPanel,
-		"Seconds",
-		10,
-		181,
-		250,
-		30
-	)
-
-makeLabel(
-	rightPanel,
-	"EQUALIZER",
-	10,
-	222,
-	120,
-	20,
-	11
-)
-
-local lowBox =
-	makeBox(
-		rightPanel,
-		"Low dB",
-		10,
-		247,
-		75,
-		30
-	)
-
-local midBox =
-	makeBox(
-		rightPanel,
-		"Mid dB",
-		92,
-		247,
-		75,
-		30
-	)
-
-local highBox =
-	makeBox(
-		rightPanel,
-		"High dB",
-		174,
-		247,
-		86,
-		30
-	)
-
---==================================================
--- MODE SWITCH
---==================================================
-
-local simpleModeButton =
-	makeButton(
-		studio,
-		"SIMPLE",
-		15,
-		-42,
+	winBox(
+		controlPanel,
+		"0",
 		80,
-		30
+		156,
+		110
 	)
 
-local advancedModeButton =
-	makeButton(
-		studio,
-		"ADVANCED",
-		102,
-		-42,
-		90,
-		30
+local applyButton =
+	winButton(
+		controlPanel,
+		"APPLY",
+		10,
+		190,
+		85
+	)
+
+local resetButton =
+	winButton(
+		controlPanel,
+		"RESET",
+		105,
+		190,
+		85
 	)
 
 --==================================================
--- ADVANCED VISIBILITY
+-- EFFECTS
 --==================================================
 
-local advancedObjects = {
-	rightPanel
-}
+local reverb =
+	Instance.new("ReverbSoundEffect")
+
+reverb.DecayTime =
+	1.5
+
+reverb.Density =
+	1
+
+reverb.Diffusion =
+	1
+
+reverb.DryLevel =
+	0
+
+reverb.WetLevel =
+	-80
+
+reverb.Parent =
+	musicPlayer
+
+local echo =
+	Instance.new("EchoSoundEffect")
+
+echo.Delay =
+	0.5
+
+echo.Feedback =
+	0
+
+echo.DryLevel =
+	0
+
+echo.WetLevel =
+	-80
+
+echo.Parent =
+	musicPlayer
+
+local chorus =
+	Instance.new("ChorusSoundEffect")
+
+chorus.Depth =
+	0
+
+chorus.Mix =
+	0
+
+chorus.Rate =
+	0.5
+
+chorus.Parent =
+	musicPlayer
+
+local flanger =
+	Instance.new("FlangeSoundEffect")
+
+flanger.Depth =
+	0
+
+flanger.Mix =
+	0
+
+flanger.Rate =
+	0.5
+
+flanger.Parent =
+	musicPlayer
 
 --==================================================
--- SIMPLE MODE
+-- NUMERIC HELPERS
 --==================================================
 
-local simpleMode =
-	true
-
-local function updateMode()
-
-	rightPanel.Visible =
-		not simpleMode
-
-	simpleModeButton.BackgroundColor3 =
-		simpleMode
-		and Color3.fromRGB(
-			65,
-			65,
-			65
-		)
-		or Color3.fromRGB(
-			30,
-			30,
-			30
-		)
-
-	advancedModeButton.BackgroundColor3 =
-		simpleMode
-		and Color3.fromRGB(
-			30,
-			30,
-			30
-		)
-		or Color3.fromRGB(
-			65,
-			65,
-			65
-		)
-
-	if simpleMode then
-
-		centerPanel.Size =
-			UDim2.new(
-				0.75,
-				-15,
-				1,
-				-55
-			)
-
-	else
-
-		centerPanel.Size =
-			UDim2.new(
-				0.48,
-				-10,
-				1,
-				-55
-			)
-
-	end
-end
-
-simpleModeButton.Activated:Connect(
-	function()
-
-		simpleMode =
-			true
-
-		updateMode()
-
-	end
+local function number(
+	boxObject,
+	fallback
 )
 
-advancedModeButton.Activated:Connect(
-	function()
-
-		simpleMode =
-			false
-
-		updateMode()
-
-	end
-)
-
-updateMode()
-
---==================================================
--- NUMBERS
---==================================================
-
-local function number(textBox, fallback)
-
-	local n =
+	local value =
 		tonumber(
-			textBox.Text
+			boxObject.Text
 		)
 
-	if n == nil then
+	if value == nil then
 		return fallback
 	end
 
-	return n
+	return value
 end
 
---==================================================
--- APPLY SIMPLE CONTROLS
---==================================================
-
-local function applySimpleControls()
+local function applyControls()
 
 	musicPlayer.Volume =
 		math.clamp(
@@ -1918,217 +1901,68 @@ local function applySimpleControls()
 		position
 end
 
---==================================================
--- APPLY ADVANCED CONTROLS
---==================================================
+applyButton.Activated:Connect(
+	function()
+		applyControls()
+	end
+)
 
-local function applyAdvancedControls()
+for _, boxObject in ipairs({
 
-	applySimpleControls()
-
-	reverb.WetLevel =
-		math.clamp(
-			number(
-				reverbBox,
-				-80
-			),
-			-80,
-			10
-		)
-
-	echo.WetLevel =
-		math.clamp(
-			number(
-				echoBox,
-				-80
-			),
-			-80,
-			10
-		)
-
-	chorus.Mix =
-		math.clamp(
-			number(
-				chorusBox,
-				0
-			),
-			0,
-			1
-		)
-
-	flanger.Mix =
-		math.clamp(
-			number(
-				flangerBox,
-				0
-			),
-			0,
-			1
-		)
-
-	tremolo.Depth =
-		math.clamp(
-			number(
-				tremoloBox,
-				0
-			),
-			0,
-			1
-		)
-
-	equalizer.LowGain =
-		math.clamp(
-			number(
-				lowBox,
-				0
-			),
-			-80,
-			10
-		)
-
-	equalizer.MidGain =
-		math.clamp(
-			number(
-				midBox,
-				0
-			),
-			-80,
-			10
-		)
-
-	equalizer.HighGain =
-		math.clamp(
-			number(
-				highBox,
-				0
-			),
-			-80,
-			10
-		)
-
-end
-
---==================================================
--- CONTROL UPDATES
---==================================================
-
-local simpleBoxes = {
 	volumeBox,
 	speedBox,
 	pitchBox,
 	distortionBox,
 	timeBox
-}
 
-for _, textBox in ipairs(simpleBoxes) do
+}) do
 
-	textBox.FocusLost:Connect(
+	boxObject.FocusLost:Connect(
 		function()
-			applySimpleControls()
+			applyControls()
 		end
 	)
-
 end
 
-local advancedBoxes = {
-	reverbBox,
-	echoBox,
-	chorusBox,
-	flangerBox,
-	tremoloBox,
-	lowBox,
-	midBox,
-	highBox
-}
-
-for _, textBox in ipairs(advancedBoxes) do
-
-	textBox.FocusLost:Connect(
-		function()
-			applyAdvancedControls()
-		end
-	)
-
-end
-
---==================================================
--- LOOPING
---==================================================
-
-local loopEnabled =
-	true
-
-loopButton.Activated:Connect(
+resetButton.Activated:Connect(
 	function()
 
-		loopEnabled =
-			not loopEnabled
+		volumeBox.Text =
+			"1"
 
-		loopButton.Text =
-			loopEnabled
-			and "LOOP: ON"
-			or "LOOP: OFF"
+		speedBox.Text =
+			"1"
 
-		musicPlayer.Looped =
-			loopEnabled
+		pitchBox.Text =
+			"0"
 
+		distortionBox.Text =
+			"0"
+
+		timeBox.Text =
+			"0"
+
+		reverb.WetLevel =
+			-80
+
+		echo.WetLevel =
+			-80
+
+		chorus.Mix =
+			0
+
+		flanger.Mix =
+			0
+
+		applyControls()
+
+		visualStatus.Text =
+			"CONTROLS RESET"
 	end
 )
 
 --==================================================
--- AUDIO STATE
---==================================================
-
-local function stopMusic()
-
-	musicPlayer:Stop()
-
-	playing =
-		false
-
-	musicActive =
-		false
-
-	status.Text =
-		"STOPPED"
-end
-
-local function pauseMusic()
-
-	musicPlayer:Pause()
-
-	playing =
-		false
-
-	status.Text =
-		"PAUSED"
-end
-
-local function restartMusic()
-
-	if loadedAudioId == "" then
-		return
-	end
-
-	musicPlayer:Stop()
-
-	musicPlayer.TimePosition =
-		0
-
-	musicPlayer:Play()
-
-	playing =
-		true
-
-	musicActive =
-		true
-
-	status.Text =
-		"PLAYING"
-end
-
---==================================================
--- AUDIO LOADER / VERIFICATION
+-- LOAD AUDIO
 --==================================================
 
 local function loadAudio()
@@ -2147,7 +1981,7 @@ local function loadAudio()
 	if id == "" then
 
 		status.Text =
-			"NO ID"
+			"STATUS: NO ID"
 
 		say(
 			"No audio asset ID was entered.",
@@ -2165,7 +1999,7 @@ local function loadAudio()
 		if not tonumber(id) then
 
 			status.Text =
-				"INVALID ID"
+				"STATUS: INVALID ID"
 
 			say(
 				"That does not appear to be a valid audio asset ID.",
@@ -2180,12 +2014,6 @@ local function loadAudio()
 			id
 	end
 
-	musicActive =
-		false
-
-	playing =
-		false
-
 	musicPlayer:Stop()
 
 	musicPlayer.SoundId =
@@ -2194,12 +2022,12 @@ local function loadAudio()
 	musicPlayer.TimePosition =
 		0
 
-	applySimpleControls()
-
 	status.Text =
-		"CHECKING..."
+		"STATUS: CHECKING"
 
-	-- Dialogue BEFORE playback.
+	visualStatus.Text =
+		"CHECKING AUDIO..."
+
 	say(
 		"Checking the requested audio source.",
 		2
@@ -2211,13 +2039,10 @@ local function loadAudio()
 	)
 
 	--==================================================
-	-- WAIT FOR LOAD
+	-- WAIT FOR AUDIO LOAD
 	--==================================================
 
 	if not musicPlayer.IsLoaded then
-
-		status.Text =
-			"LOADING..."
 
 		local loaded =
 			false
@@ -2229,13 +2054,13 @@ local function loadAudio()
 				end
 			)
 
-		local start =
+		local started =
 			os.clock()
 
 		while not loaded
 			and not musicPlayer.IsLoaded
 			and os.clock() -
-				start < 12 do
+				started < 12 do
 
 			task.wait(
 				0.1
@@ -2248,7 +2073,10 @@ local function loadAudio()
 	if not musicPlayer.IsLoaded then
 
 		status.Text =
-			"LOAD FAILED"
+			"STATUS: LOAD FAILED"
+
+		visualStatus.Text =
+			"AUDIO FAILED TO LOAD"
 
 		say(
 			"The audio source could not be loaded.",
@@ -2258,11 +2086,16 @@ local function loadAudio()
 		return false
 	end
 
-	task.wait(0.25)
+	task.wait(
+		0.25
+	)
 
 	if musicPlayer.TimeLength <= 0 then
 
 		status.Text =
+			"STATUS: NOT PLAYABLE"
+
+		visualStatus.Text =
 			"NO PLAYABLE AUDIO"
 
 		say(
@@ -2284,6 +2117,9 @@ local function loadAudio()
 		)
 
 	status.Text =
+		"STATUS: READY"
+
+	visualStatus.Text =
 		"AUDIO READY"
 
 	say(
@@ -2300,7 +2136,7 @@ local function loadAudio()
 end
 
 --==================================================
--- PLAY
+-- PLAYBACK
 --==================================================
 
 local function playMusic()
@@ -2314,14 +2150,10 @@ local function playMusic()
 
 	stopGameSounds()
 
-	applySimpleControls()
-
-	if not simpleMode then
-		applyAdvancedControls()
-	end
+	applyControls()
 
 	musicPlayer.Looped =
-		loopEnabled
+		true
 
 	musicPlayer:Play()
 
@@ -2332,55 +2164,97 @@ local function playMusic()
 		true
 
 	status.Text =
+		"STATUS: PLAYING"
+
+	visualStatus.Text =
 		"PLAYING"
 end
 
---==================================================
--- BUTTONS
---==================================================
+local function pauseMusic()
+
+	musicPlayer:Pause()
+
+	playing =
+		false
+
+	visualStatus.Text =
+		"PAUSED"
+end
+
+local function stopMusic()
+
+	musicPlayer:Stop()
+
+	musicActive =
+		false
+
+	playing =
+		false
+
+	status.Text =
+		"STATUS: STOPPED"
+
+	visualStatus.Text =
+		"STOPPED"
+end
+
+local function restartMusic()
+
+	if loadedAudioId == "" then
+		return
+	end
+
+	musicPlayer:Stop()
+
+	musicPlayer.TimePosition =
+		0
+
+	applyControls()
+
+	musicPlayer:Play()
+
+	musicActive =
+		true
+
+	playing =
+		true
+
+	visualStatus.Text =
+		"RESTARTED"
+end
 
 loadButton.Activated:Connect(
 	function()
-
 		loadAudio()
-
 	end
 )
 
 playButton.Activated:Connect(
 	function()
-
 		playMusic()
-
 	end
 )
 
 pauseButton.Activated:Connect(
 	function()
-
 		pauseMusic()
-
 	end
 )
 
 stopButton.Activated:Connect(
 	function()
-
 		stopMusic()
-
 	end
 )
 
 restartButton.Activated:Connect(
 	function()
-
 		restartMusic()
-
 	end
 )
 
 --==================================================
--- PROGRESS BAR
+-- PROGRESS BAR SEEK
 --==================================================
 
 progressBackground.InputBegan:Connect(
@@ -2400,17 +2274,17 @@ progressBackground.InputBegan:Connect(
 			input.Position.X -
 			progressBackground.AbsolutePosition.X
 
-		local alpha =
+		local percentage =
 			math.clamp(
 				x /
-				progressBackground.AbsoluteSize.X,
+					progressBackground.AbsoluteSize.X,
 				0,
 				1
 			)
 
 		musicPlayer.TimePosition =
-			alpha *
-			musicPlayer.TimeLength
+			musicPlayer.TimeLength *
+			percentage
 
 	end
 )
@@ -2419,34 +2293,32 @@ progressBackground.InputBegan:Connect(
 -- VISUALIZER
 --==================================================
 
-local visualizerTime =
+local visualTime =
 	0
 
 RunService.RenderStepped:Connect(
 	function(dt)
 
-		visualizerTime += dt
-
-		local active =
-			musicPlayer.IsPlaying
+		visualTime += dt
 
 		local loudness =
 			0
 
-		if active then
+		if musicPlayer.IsPlaying then
 
-			pcall(function()
+			pcall(
+				function()
 
-				loudness =
-					math.clamp(
-						musicPlayer.PlaybackLoudness /
-							300,
-						0,
-						1
-					)
+					loudness =
+						math.clamp(
+							musicPlayer.PlaybackLoudness /
+								300,
+							0,
+							1
+						)
 
-			end)
-
+				end
+			)
 		end
 
 		for i, bar in ipairs(bars) do
@@ -2454,50 +2326,58 @@ RunService.RenderStepped:Connect(
 			local wave =
 				(
 					math.sin(
-						visualizerTime * 3 +
-						i * 0.55
+						visualTime * 4 +
+						i * 0.45
 					)
 					+ 1
-				)
-				* 0.5
+				) * 0.5
 
 			local wave2 =
 				(
 					math.sin(
-						visualizerTime * 5 -
-						i * 0.3
+						visualTime * 7 -
+						i * 0.25
 					)
 					+ 1
-				)
-				* 0.5
+				) * 0.5
 
-			local target =
-				active
-				and (
-					0.12 +
+			local height
+
+			if musicPlayer.IsPlaying then
+
+				height =
+					0.08 +
 					loudness *
 					(
-						0.25 +
+						0.2 +
 						wave *
-						0.55 +
+						0.5 +
 						wave2 *
 						0.2
 					)
-				)
-				or 0.06
 
-			target =
+			else
+
+				height =
+					0.04 +
+					wave *
+					0.04
+
+			end
+
+			height =
 				math.clamp(
-					target,
-					0.04,
-					1
+					height,
+					0.035,
+					0.95
 				)
 
 			bar.Size =
 				UDim2.new(
-					1 / BAR_COUNT * 0.72,
+					1 / BAR_COUNT *
+						0.7,
 					0,
-					target,
+					height,
 					0
 				)
 
@@ -2511,31 +2391,35 @@ RunService.RenderStepped:Connect(
 				)
 		end
 
-		-- Time display.
 		if musicPlayer.TimeLength > 0 then
+
+			local current =
+				musicPlayer.TimePosition
+
+			local total =
+				musicPlayer.TimeLength
 
 			timeDisplay.Text =
 				string.format(
 					"%02d:%02d / %02d:%02d",
 					math.floor(
-						musicPlayer.TimePosition / 60
+						current / 60
 					),
 					math.floor(
-						musicPlayer.TimePosition
+						current
 					) % 60,
 					math.floor(
-						musicPlayer.TimeLength / 60
+						total / 60
 					),
 					math.floor(
-						musicPlayer.TimeLength
+						total
 					) % 60
 				)
 
 			progressFill.Size =
 				UDim2.new(
 					math.clamp(
-						musicPlayer.TimePosition /
-							musicPlayer.TimeLength,
+						current / total,
 						0,
 						1
 					),
@@ -2545,27 +2429,11 @@ RunService.RenderStepped:Connect(
 				)
 
 		end
-
-		-- Detect natural ending.
-		if musicActive
-			and not musicPlayer.IsPlaying
-			and not musicPlayer.IsPaused
-			and not loopEnabled then
-
-			musicActive =
-				false
-
-			playing =
-				false
-
-			status.Text =
-				"ENDED"
-		end
 	end
 )
 
 --==================================================
--- AUDIO ENFORCER
+-- ENFORCE AUDIO OVERRIDE WHILE PLAYING
 --==================================================
 
 local audioLock =
@@ -2585,7 +2453,6 @@ local audioLock =
 				musicPlayer:Play()
 
 			end
-
 		end
 	)
 
@@ -2593,7 +2460,9 @@ local audioLock =
 -- REVEAL
 --==================================================
 
-task.wait(0.75)
+task.wait(
+	0.75
+)
 
 local zoomOut =
 	TweenService:Create(
@@ -2645,7 +2514,6 @@ else
 
 	zoomScale.Scale =
 		originalScale
-
 end
 
 --==================================================
@@ -2658,18 +2526,18 @@ say(
 )
 
 say(
-	"Simple mode provides the essential controls.",
-	2.5
-)
-
-say(
-	"Advanced mode unlocks the full effects rack.",
-	2.5
-)
-
-say(
-	"Enter an audio asset ID to begin.",
+	"Simple controls loaded.",
 	2
+)
+
+say(
+	"Enter an audio asset ID and load it.",
+	2.5
+)
+
+say(
+	"The source will be checked before playback.",
+	2.5
 )
 
 --==================================================

@@ -12,9 +12,14 @@ local mainUI = playerGui:WaitForChild("MainUI")
 -- EXISTING UI
 --==================================================
 
-local amb = mainUI:WaitForChild("Amb")
-local level1 = mainUI:WaitForChild("Level1")
-local level2 = mainUI:WaitForChild("Level2")
+local amb =
+	mainUI:WaitForChild("Amb")
+
+local level1 =
+	mainUI:WaitForChild("Level1")
+
+local level2 =
+	mainUI:WaitForChild("Level2")
 
 local surfaceScreen =
 	mainUI:WaitForChild("SurfaceScreen")
@@ -32,7 +37,10 @@ local layer2Group =
 	baseFrame:WaitForChild("Layer2Group")
 
 local dialogueLabel =
-	layer1Group:FindFirstChild("DialogueLabel", true)
+	layer1Group:FindFirstChild(
+		"DialogueLabel",
+		true
+	)
 
 local dialogueFrame =
 	layer2Group
@@ -41,10 +49,15 @@ local dialogueFrame =
 		:WaitForChild("DialogueFrame")
 
 local requestSpeech =
-	dialogueFrame:WaitForChild("RequestSpeech")
+	dialogueFrame:WaitForChild(
+		"RequestSpeech"
+	)
 
 local characterVoice =
-	mainUI:FindFirstChild("Character_Voice", true)
+	mainUI:FindFirstChild(
+		"Character_Voice",
+		true
+	)
 
 if not dialogueLabel then
 	warn("DialogueLabel not found")
@@ -69,18 +82,25 @@ local eyeLabel =
 	head:WaitForChild("EyeLabel")
 
 local secretLabel =
-	eyeLabel:WaitForChild("SecretLabel")
+	eyeLabel:WaitForChild(
+		"SecretLabel"
+	)
+
+local thankYou =
+	layer1Group:FindFirstChild(
+		"ThankYou",
+		true
+	)
 
 --==================================================
--- DO NOT TOUCH STATICLABEL
+-- STATIC LABEL
+-- DO NOT MODIFY IT OR ITS CHILDREN.
 --==================================================
 
 local staticLabel =
-	baseFrame:WaitForChild("StaticLabel")
-
---==================================================
--- HELPERS
---==================================================
+	baseFrame:WaitForChild(
+		"StaticLabel"
+	)
 
 local function isInsideStaticLabel(obj)
 
@@ -88,23 +108,28 @@ local function isInsideStaticLabel(obj)
 		return true
 	end
 
-	return obj:IsDescendantOf(staticLabel)
+	return obj:IsDescendantOf(
+		staticLabel
+	)
 end
 
 --==================================================
--- OUTER BASEHOLDER IMAGEBUTTON CLEANUP
+-- OUTER BASEHOLDER CLEANUP
 --==================================================
 
 local outerBaseHolder
 
-for _, child in ipairs(mainUI:GetChildren()) do
+for _, child in ipairs(
+	mainUI:GetChildren()
+) do
 
 	if child.Name == "BaseHolder"
 		and child ~= surfaceBaseHolder then
 
-		outerBaseHolder = child
-		break
+		outerBaseHolder =
+			child
 
+		break
 	end
 end
 
@@ -124,13 +149,12 @@ if outerBaseHolder then
 			if obj:IsA("ImageButton") then
 				obj:Destroy()
 			end
-
 		end
 	end
 end
 
 --==================================================
--- HIDE BACKGROUND / MOON / SUN / GAME BUTTONS
+-- HIDDEN OBJECTS
 --==================================================
 
 local forcedHiddenNames = {
@@ -153,29 +177,138 @@ local function forceHiddenObjects()
 		end
 
 		local lowerName =
-			string.lower(obj.Name)
+			string.lower(
+				obj.Name
+			)
 
 		if forcedHiddenNames[lowerName] then
 
 			if obj:IsA("GuiObject") then
 				obj.Visible = false
 			end
-
 		end
 	end
 end
 
 --==================================================
--- BLUE CHARACTER COLORS
+-- SECRET LABEL
+-- FORCE INVISIBLE FOREVER
+--==================================================
+
+local function forceSecretLabelHidden()
+
+	secretLabel.Visible =
+		false
+
+	if secretLabel:IsA("ImageLabel")
+		or secretLabel:IsA("ImageButton") then
+
+		secretLabel.ImageTransparency =
+			1
+	end
+
+	if secretLabel:IsA("TextLabel")
+		or secretLabel:IsA("TextButton") then
+
+		secretLabel.TextTransparency =
+			1
+	end
+end
+
+--==================================================
+-- THANK YOU
+-- WHITE BACKGROUND
+-- BLACK IMAGE
+--==================================================
+
+local function forceThankYou()
+
+	if not thankYou then
+		return
+	end
+
+	if thankYou:IsA("GuiObject") then
+
+		thankYou.Visible =
+			true
+
+		thankYou.BackgroundTransparency =
+			0
+
+		thankYou.BackgroundColor3 =
+			Color3.fromRGB(
+				255,
+				255,
+				255
+			)
+
+		-- Keep it above the DJ panel.
+		thankYou.ZIndex =
+			502
+	end
+
+	if thankYou:IsA("ImageLabel")
+		or thankYou:IsA("ImageButton") then
+
+		thankYou.ImageTransparency =
+			0
+
+		thankYou.ImageColor3 =
+			Color3.fromRGB(
+				0,
+				0,
+				0
+			)
+	end
+end
+
+--==================================================
+-- CHARACTER COLORS
 --==================================================
 
 local characterColors = {
-	Head = Color3.fromRGB(55, 110, 210),
-	Torso = Color3.fromRGB(40, 85, 175),
-	LeftHand = Color3.fromRGB(65, 125, 225),
-	RightHand = Color3.fromRGB(65, 125, 225),
-	LeftFoot = Color3.fromRGB(30, 70, 150),
-	RightFoot = Color3.fromRGB(30, 70, 150)
+
+	Head =
+		Color3.fromRGB(
+			55,
+			110,
+			210
+		),
+
+	Torso =
+		Color3.fromRGB(
+			40,
+			85,
+			175
+		),
+
+	LeftHand =
+		Color3.fromRGB(
+			65,
+			125,
+			225
+		),
+
+	RightHand =
+		Color3.fromRGB(
+			65,
+			125,
+			225
+		),
+
+	LeftFoot =
+		Color3.fromRGB(
+			30,
+			70,
+			150
+		),
+
+	RightFoot =
+		Color3.fromRGB(
+			30,
+			70,
+			150
+		)
 }
 
 local function forceCharacterAppearance()
@@ -196,9 +329,11 @@ local function forceCharacterAppearance()
 
 		if part:IsA("GuiObject") then
 
-			part.Visible = true
-			part.ZIndex = 500
+			part.Visible =
+				true
 
+			part.ZIndex =
+				500
 		end
 
 		if part:IsA("ImageLabel")
@@ -228,9 +363,11 @@ local function forceCharacterAppearance()
 
 			if child:IsA("GuiObject") then
 
-				child.Visible = true
-				child.ZIndex = 501
+				child.Visible =
+					true
 
+				child.ZIndex =
+					501
 			end
 
 			if child:IsA("ImageLabel")
@@ -256,79 +393,12 @@ local function forceCharacterAppearance()
 		end
 	end
 
-	-- SecretLabel is permanently visible.
-	secretLabel.Visible = true
-
-	secretLabel.ZIndex = 502
-
-	if secretLabel:IsA("ImageLabel")
-		or secretLabel:IsA("ImageButton") then
-
-		secretLabel.ImageTransparency = 0
-	end
-
-	if secretLabel:IsA("TextLabel")
-		or secretLabel:IsA("TextButton") then
-
-		secretLabel.TextTransparency = 0
-	end
+	-- ThankYou should remain above the DJ panel.
+	forceThankYou()
 end
 
 --==================================================
--- BLUE BACKGROUND INSIDE MAINUI
---==================================================
-
-local blueBackground =
-	mainUI:FindFirstChild(
-		"C9HZZBlueBackground"
-	)
-
-if blueBackground then
-	blueBackground:Destroy()
-end
-
-blueBackground =
-	Instance.new("Frame")
-
-blueBackground.Name =
-	"C9HZZBlueBackground"
-
-blueBackground.Size =
-	UDim2.new(
-		1, 0,
-		1, 0
-	)
-
-blueBackground.Position =
-	UDim2.new(
-		0, 0,
-		0, 0
-	)
-
-blueBackground.BackgroundColor3 =
-	Color3.fromRGB(
-		25,
-		60,
-		125
-	)
-
-blueBackground.BackgroundTransparency =
-	0
-
-blueBackground.BorderSizePixel =
-	0
-
-blueBackground.ZIndex =
-	0
-
-blueBackground.Visible =
-	true
-
-blueBackground.Parent =
-	mainUI
-
---==================================================
--- KEEP MAINUI ABOVE BLUE BACKGROUND
+-- MAIN UI LAYERING
 --==================================================
 
 local function forceMainUILayering()
@@ -337,26 +407,23 @@ local function forceMainUILayering()
 		mainUI:GetDescendants()
 	) do
 
-		if obj == blueBackground then
-			continue
-		end
-
 		if isInsideStaticLabel(obj) then
 			continue
 		end
 
 		if obj:IsA("GuiObject")
+			and obj ~= studio
 			and obj.ZIndex < 2 then
 
-			obj.ZIndex = 2
-
+			obj.ZIndex =
+				2
 		end
 	end
-
-	blueBackground.ZIndex = 0
 end
 
 forceHiddenObjects()
+forceSecretLabelHidden()
+forceThankYou()
 forceCharacterAppearance()
 forceMainUILayering()
 
@@ -364,7 +431,8 @@ forceMainUILayering()
 -- INPUT LOCK
 --==================================================
 
-local interactionLocked = true
+local interactionLocked =
+	true
 
 local lockedButtons = {}
 local lockedTextBoxes = {}
@@ -384,32 +452,44 @@ local function enforceGuiLock()
 			if not lockedButtons[obj] then
 
 				lockedButtons[obj] = {
-					Active = obj.Active,
-					Selectable = obj.Selectable,
+					Active =
+						obj.Active,
+
+					Selectable =
+						obj.Selectable,
+
 					AutoButtonColor =
 						obj.AutoButtonColor
 				}
-
 			end
 
-			obj.Active = false
-			obj.Selectable = false
-			obj.AutoButtonColor = false
+			obj.Active =
+				false
+
+			obj.Selectable =
+				false
+
+			obj.AutoButtonColor =
+				false
 
 		elseif obj:IsA("TextBox") then
 
 			if not lockedTextBoxes[obj] then
 
 				lockedTextBoxes[obj] = {
-					Active = obj.Active,
+					Active =
+						obj.Active,
+
 					TextEditable =
 						obj.TextEditable
 				}
-
 			end
 
-			obj.Active = false
-			obj.TextEditable = false
+			obj.Active =
+				false
+
+			obj.TextEditable =
+				false
 		end
 	end
 end
@@ -430,7 +510,6 @@ local function restoreGui()
 
 			obj.AutoButtonColor =
 				state.AutoButtonColor
-
 		end
 	end
 
@@ -445,7 +524,6 @@ local function restoreGui()
 
 			obj.TextEditable =
 				state.TextEditable
-
 		end
 	end
 
@@ -469,6 +547,8 @@ local guiLockConnection =
 			end
 
 			forceHiddenObjects()
+			forceSecretLabelHidden()
+			forceThankYou()
 			forceCharacterAppearance()
 			forceMainUILayering()
 
@@ -521,7 +601,7 @@ level2:Stop()
 level2.Volume = 0
 
 --==================================================
--- SPEECH
+-- DIALOGUE
 --==================================================
 
 local function say(
@@ -543,7 +623,6 @@ local function say(
 
 		characterVoice.PlaybackSpeed =
 			playbackSpeed
-
 	end
 
 	dialogueLabel.AutoLocalize =
@@ -559,6 +638,7 @@ local function say(
 		function()
 
 			requestSpeech:Invoke(
+
 				{
 					{
 						text,
@@ -568,6 +648,7 @@ local function say(
 						}
 					}
 				},
+
 				false,
 				duration,
 				characterVoice
@@ -598,7 +679,9 @@ end
 -- INTRO
 --==================================================
 
-task.wait(0.5)
+task.wait(
+	0.5
+)
 
 say(
 	"Initializing audio studio.",
@@ -620,34 +703,48 @@ say(
 	2
 )
 
-level1.Volume = 0
-level1.PlaybackSpeed = 1
-level1.Looped = true
+level1.Volume =
+	0
+
+level1.PlaybackSpeed =
+	1
+
+level1.Looped =
+	true
+
 level1:Play()
 
 local speedTween =
 	TweenService:Create(
+
 		level1,
+
 		TweenInfo.new(
 			2.5,
 			Enum.EasingStyle.Sine,
 			Enum.EasingDirection.Out
 		),
+
 		{
-			PlaybackSpeed = 0.5
+			PlaybackSpeed =
+				0.5
 		}
 	)
 
 local volumeTween =
 	TweenService:Create(
+
 		level1,
+
 		TweenInfo.new(
 			1.5,
 			Enum.EasingStyle.Sine,
 			Enum.EasingDirection.Out
 		),
+
 		{
-			Volume = 1
+			Volume =
+				1
 		}
 	)
 
@@ -663,14 +760,18 @@ say(
 
 local musicFade =
 	TweenService:Create(
+
 		level1,
+
 		TweenInfo.new(
 			2.5,
 			Enum.EasingStyle.Sine,
 			Enum.EasingDirection.InOut
 		),
+
 		{
-			Volume = 0
+			Volume =
+				0
 		}
 	)
 
@@ -678,10 +779,12 @@ musicFade:Play()
 musicFade.Completed:Wait()
 
 level1:Stop()
-level1.Volume = 0
+level1.Volume =
+	0
 
 level2:Stop()
-level2.Volume = 0
+level2.Volume =
+	0
 
 say(
 	"Background audio disabled.",
@@ -723,14 +826,18 @@ blackScreen.BorderSizePixel =
 
 blackScreen.Size =
 	UDim2.new(
-		1, 0,
-		1, 0
+		1,
+		0,
+		1,
+		0
 	)
 
 blackScreen.Position =
 	UDim2.new(
-		0, 0,
-		0, 0
+		0,
+		0,
+		0,
+		0
 	)
 
 blackScreen.ZIndex =
@@ -774,12 +881,15 @@ local originalScale =
 
 local zoomIn =
 	TweenService:Create(
+
 		zoomScale,
+
 		TweenInfo.new(
 			2,
 			Enum.EasingStyle.Sine,
 			Enum.EasingDirection.In
 		),
+
 		{
 			Scale =
 				originalScale * 1.12
@@ -788,14 +898,18 @@ local zoomIn =
 
 local blackIn =
 	TweenService:Create(
+
 		blackScreen,
+
 		TweenInfo.new(
 			2,
 			Enum.EasingStyle.Sine,
 			Enum.EasingDirection.In
 		),
+
 		{
-			BackgroundTransparency = 0
+			BackgroundTransparency =
+				0
 		}
 	)
 
@@ -808,7 +922,7 @@ blackScreen.BackgroundTransparency =
 	0
 
 --==================================================
--- MOVE WHOLE CHARACTER TOGETHER
+-- MOVE WHOLE CHARACTER
 --==================================================
 
 local originalCharacterPosition =
@@ -818,18 +932,22 @@ local movedCharacterPosition =
 	UDim2.new(
 		originalCharacterPosition.X.Scale,
 		originalCharacterPosition.X.Offset,
+
 		originalCharacterPosition.Y.Scale,
 		originalCharacterPosition.Y.Offset - 220
 	)
 
 local characterMoveTween =
 	TweenService:Create(
+
 		layer1Group,
+
 		TweenInfo.new(
 			1.6,
 			Enum.EasingStyle.Sine,
 			Enum.EasingDirection.InOut
 		),
+
 		{
 			Position =
 				movedCharacterPosition
@@ -890,9 +1008,14 @@ distortion.Parent =
 -- AUDIO STATE
 --==================================================
 
-local loadedAudioId = ""
-local musicActive = false
-local playing = false
+local loadedAudioId =
+	""
+
+local musicActive =
+	false
+
+local playing =
+	false
 
 --==================================================
 -- STOP GAME AUDIO
@@ -901,11 +1024,13 @@ local playing = false
 local function stopGameSounds()
 
 	for _, name in ipairs({
+
 		"Amb",
 		"Level1",
 		"Level2",
 		"GameOver",
 		"Final"
+
 	}) do
 
 		local sound =
@@ -918,15 +1043,14 @@ local function stopGameSounds()
 			and sound:IsA("Sound") then
 
 			sound:Stop()
-			sound.Volume = 0
-
+			sound.Volume =
+				0
 		end
 	end
 end
 
 --==================================================
 -- DJ STUDIO
--- SAME MainUI SCREENGUI
 --==================================================
 
 local studio =
@@ -946,14 +1070,18 @@ studio.Name =
 
 studio.Size =
 	UDim2.new(
-		1, 0,
-		0, 265
+		1,
+		0,
+		0,
+		265
 	)
 
 studio.Position =
 	UDim2.new(
-		0, 0,
-		1, -265
+		0,
+		0,
+		1,
+		-265
 	)
 
 studio.BackgroundColor3 =
@@ -980,7 +1108,7 @@ studio.Parent =
 	mainUI
 
 --==================================================
--- WINDOWS TITLE BAR
+-- TITLE BAR
 --==================================================
 
 local titleBar =
@@ -988,14 +1116,18 @@ local titleBar =
 
 titleBar.Size =
 	UDim2.new(
-		1, 0,
-		0, 28
+		1,
+		0,
+		0,
+		28
 	)
 
 titleBar.Position =
 	UDim2.new(
-		0, 0,
-		0, 0
+		0,
+		0,
+		0,
+		0
 	)
 
 titleBar.BackgroundColor3 =
@@ -1056,7 +1188,7 @@ titlePadding.Parent =
 	titleBar
 
 --==================================================
--- CLOSE
+-- CLOSE BUTTON
 --==================================================
 
 local closeButton =
@@ -1119,7 +1251,9 @@ closeButton.Parent =
 -- DRAGGING
 --==================================================
 
-local dragging = false
+local dragging =
+	false
+
 local dragStart
 local startPosition
 
@@ -1131,10 +1265,14 @@ titleBar.InputBegan:Connect(
 			or input.UserInputType ==
 			Enum.UserInputType.Touch then
 
-			dragging = true
-			dragStart = input.Position
-			startPosition = studio.Position
+			dragging =
+				true
 
+			dragStart =
+				input.Position
+
+			startPosition =
+				studio.Position
 		end
 	end
 )
@@ -1147,8 +1285,8 @@ titleBar.InputEnded:Connect(
 			or input.UserInputType ==
 			Enum.UserInputType.Touch then
 
-			dragging = false
-
+			dragging =
+				false
 		end
 	end
 )
@@ -1174,14 +1312,30 @@ UserInputService.InputChanged:Connect(
 
 		studio.Position =
 			UDim2.new(
+
 				startPosition.X.Scale,
+
 				startPosition.X.Offset +
 					delta.X,
+
 				startPosition.Y.Scale,
+
 				startPosition.Y.Offset +
 					delta.Y
 			)
+	end
+)
 
+closeButton.Activated:Connect(
+	function()
+
+		musicActive =
+			false
+
+		musicPlayer:Stop()
+
+		studio.Visible =
+			false
 	end
 )
 
@@ -1194,14 +1348,18 @@ local workArea =
 
 workArea.Size =
 	UDim2.new(
-		1, -10,
-		1, -35
+		1,
+		-10,
+		1,
+		-35
 	)
 
 workArea.Position =
 	UDim2.new(
-		0, 5,
-		0, 33
+		0,
+		5,
+		0,
+		33
 	)
 
 workArea.BackgroundColor3 =
@@ -1228,7 +1386,116 @@ workArea.Parent =
 	studio
 
 --==================================================
--- PANEL HELPERS
+-- PANELS
+--==================================================
+
+local sourcePanel =
+	Instance.new("Frame")
+
+sourcePanel.Size =
+	UDim2.new(
+		0.24,
+		-8,
+		1,
+		-10
+	)
+
+sourcePanel.Position =
+	UDim2.new(
+		0,
+		5,
+		0,
+		5
+	)
+
+sourcePanel.BackgroundColor3 =
+	Color3.fromRGB(
+		192,
+		192,
+		192
+	)
+
+sourcePanel.BorderSizePixel =
+	2
+
+sourcePanel.ZIndex =
+	102
+
+sourcePanel.Parent =
+	workArea
+
+local visualPanel =
+	Instance.new("Frame")
+
+visualPanel.Size =
+	UDim2.new(
+		0.52,
+		-8,
+		1,
+		-10
+	)
+
+visualPanel.Position =
+	UDim2.new(
+		0.24,
+		4,
+		0,
+		5
+	)
+
+visualPanel.BackgroundColor3 =
+	Color3.fromRGB(
+		35,
+		35,
+		35
+	)
+
+visualPanel.BorderSizePixel =
+	2
+
+visualPanel.ZIndex =
+	102
+
+visualPanel.Parent =
+	workArea
+
+local controlPanel =
+	Instance.new("Frame")
+
+controlPanel.Size =
+	UDim2.new(
+		0.24,
+		-8,
+		1,
+		-10
+	)
+
+controlPanel.Position =
+	UDim2.new(
+		0.76,
+		3,
+		0,
+		5
+	)
+
+controlPanel.BackgroundColor3 =
+	Color3.fromRGB(
+		192,
+		192,
+		192
+	)
+
+controlPanel.BorderSizePixel =
+	2
+
+controlPanel.ZIndex =
+	102
+
+controlPanel.Parent =
+	workArea
+
+--==================================================
+-- UI HELPERS
 --==================================================
 
 local function winLabel(
@@ -1442,103 +1709,6 @@ local function winButton(
 end
 
 --==================================================
--- THREE PANELS
---==================================================
-
-local sourcePanel =
-	Instance.new("Frame")
-
-sourcePanel.Size =
-	UDim2.new(
-		0.24, -8,
-		1, -10
-	)
-
-sourcePanel.Position =
-	UDim2.new(
-		0, 5,
-		0, 5
-	)
-
-sourcePanel.BackgroundColor3 =
-	Color3.fromRGB(
-		192,
-		192,
-		192
-	)
-
-sourcePanel.BorderSizePixel =
-	2
-
-sourcePanel.ZIndex =
-	102
-
-sourcePanel.Parent =
-	workArea
-
-local visualPanel =
-	Instance.new("Frame")
-
-visualPanel.Size =
-	UDim2.new(
-		0.52, -8,
-		1, -10
-	)
-
-visualPanel.Position =
-	UDim2.new(
-		0.24, 4,
-		0, 5
-	)
-
-visualPanel.BackgroundColor3 =
-	Color3.fromRGB(
-		35,
-		35,
-		35
-	)
-
-visualPanel.BorderSizePixel =
-	2
-
-visualPanel.ZIndex =
-	102
-
-visualPanel.Parent =
-	workArea
-
-local controlPanel =
-	Instance.new("Frame")
-
-controlPanel.Size =
-	UDim2.new(
-		0.24, -8,
-		1, -10
-	)
-
-controlPanel.Position =
-	UDim2.new(
-		0.76, 3,
-		0, 5
-	)
-
-controlPanel.BackgroundColor3 =
-	Color3.fromRGB(
-		192,
-		192,
-		192
-	)
-
-controlPanel.BorderSizePixel =
-	2
-
-controlPanel.ZIndex =
-	102
-
-controlPanel.Parent =
-	workArea
-
---==================================================
 -- SOURCE PANEL
 --==================================================
 
@@ -1624,7 +1794,8 @@ local status =
 		70
 	)
 
-status.TextWrapped = true
+status.TextWrapped =
+	true
 
 --==================================================
 -- CENTER VISUALIZER
@@ -1658,8 +1829,10 @@ visualizer.Position =
 
 visualizer.Size =
 	UDim2.new(
-		1, -20,
-		0, 110
+		1,
+		-20,
+		0,
+		110
 	)
 
 visualizer.BackgroundColor3 =
@@ -1672,6 +1845,9 @@ visualizer.BackgroundColor3 =
 visualizer.BorderSizePixel =
 	1
 
+visualizer.ClipsDescendants =
+	true
+
 visualizer.ZIndex =
 	103
 
@@ -1683,14 +1859,18 @@ local waveformLine =
 
 waveformLine.Size =
 	UDim2.new(
-		1, -20,
-		0, 1
+		1,
+		-20,
+		0,
+		1
 	)
 
 waveformLine.Position =
 	UDim2.new(
-		0, 10,
-		0.5, 0
+		0,
+		10,
+		0.5,
+		0
 	)
 
 waveformLine.BackgroundColor3 =
@@ -1711,7 +1891,8 @@ waveformLine.Parent =
 
 local bars = {}
 
-local BAR_COUNT = 64
+local BAR_COUNT =
+	64
 
 for i = 1, BAR_COUNT do
 
@@ -1734,7 +1915,8 @@ for i = 1, BAR_COUNT do
 
 	bar.Position =
 		UDim2.new(
-			(i - 1) / BAR_COUNT,
+			(i - 1) /
+				BAR_COUNT,
 			0,
 			1,
 			-8
@@ -1790,8 +1972,10 @@ progressBackground.Position =
 
 progressBackground.Size =
 	UDim2.new(
-		1, -20,
-		0, 10
+		1,
+		-20,
+		0,
+		10
 	)
 
 progressBackground.BackgroundColor3 =
@@ -1815,8 +1999,10 @@ local progressFill =
 
 progressFill.Size =
 	UDim2.new(
-		0, 0,
-		1, 0
+		0,
+		0,
+		1,
+		0
 	)
 
 progressFill.BackgroundColor3 =
@@ -1853,7 +2039,7 @@ visualStatus.TextColor3 =
 	)
 
 --==================================================
--- RIGHT SIMPLE CONTROLS
+-- SIMPLE CONTROLS
 --==================================================
 
 winLabel(
@@ -1974,7 +2160,7 @@ local resetButton =
 	)
 
 --==================================================
--- CONTROL HELPERS
+-- AUDIO CONTROLS
 --==================================================
 
 local function number(
@@ -2068,11 +2254,20 @@ applyButton.Activated:Connect(
 resetButton.Activated:Connect(
 	function()
 
-		volumeBox.Text = "1"
-		speedBox.Text = "1"
-		pitchBox.Text = "0"
-		distortionBox.Text = "0"
-		timeBox.Text = "0"
+		volumeBox.Text =
+			"1"
+
+		speedBox.Text =
+			"1"
+
+		pitchBox.Text =
+			"0"
+
+		distortionBox.Text =
+			"0"
+
+		timeBox.Text =
+			"0"
 
 		applyControls()
 
@@ -2082,11 +2277,13 @@ resetButton.Activated:Connect(
 )
 
 for _, boxObject in ipairs({
+
 	volumeBox,
 	speedBox,
 	pitchBox,
 	distortionBox,
 	timeBox
+
 }) do
 
 	boxObject.FocusLost:Connect(
@@ -2149,8 +2346,11 @@ local function loadAudio()
 			id
 	end
 
-	musicActive = false
-	playing = false
+	musicActive =
+		false
+
+	playing =
+		false
 
 	musicPlayer:Stop()
 
@@ -2166,7 +2366,6 @@ local function loadAudio()
 	visualStatus.Text =
 		"CHECKING AUDIO..."
 
-	-- Dialogue occurs BEFORE playback.
 	say(
 		"Checking the requested audio source.",
 		2
@@ -2185,7 +2384,8 @@ local function loadAudio()
 		local connection =
 			musicPlayer.Loaded:Connect(
 				function()
-					loaded = true
+					loaded =
+						true
 				end
 			)
 
@@ -2194,9 +2394,12 @@ local function loadAudio()
 
 		while not loaded
 			and not musicPlayer.IsLoaded
-			and os.clock() - started < 12 do
+			and os.clock() -
+				started < 12 do
 
-			task.wait(0.1)
+			task.wait(
+				0.1
+			)
 		end
 
 		connection:Disconnect()
@@ -2218,7 +2421,9 @@ local function loadAudio()
 		return false
 	end
 
-	task.wait(0.25)
+	task.wait(
+		0.25
+	)
 
 	if musicPlayer.TimeLength <= 0 then
 
@@ -2279,13 +2484,19 @@ local function playMusic()
 	end
 
 	stopGameSounds()
+
 	applyControls()
 
-	musicPlayer.Looped = true
+	musicPlayer.Looped =
+		true
+
 	musicPlayer:Play()
 
-	musicActive = true
-	playing = true
+	musicActive =
+		true
+
+	playing =
+		true
 
 	status.Text =
 		"STATUS: PLAYING"
@@ -2298,7 +2509,8 @@ local function pauseMusic()
 
 	musicPlayer:Pause()
 
-	playing = false
+	playing =
+		false
 
 	visualStatus.Text =
 		"PAUSED"
@@ -2308,8 +2520,11 @@ local function stopMusic()
 
 	musicPlayer:Stop()
 
-	musicActive = false
-	playing = false
+	musicActive =
+		false
+
+	playing =
+		false
 
 	status.Text =
 		"STATUS: STOPPED"
@@ -2330,10 +2545,14 @@ local function restartMusic()
 		0
 
 	applyControls()
+
 	musicPlayer:Play()
 
-	musicActive = true
-	playing = true
+	musicActive =
+		true
+
+	playing =
+		true
 
 	visualStatus.Text =
 		"RESTARTED"
@@ -2379,6 +2598,7 @@ loopButton.Activated:Connect(
 			musicPlayer.Looped
 			and "LOOP: ON"
 			or "LOOP: OFF"
+
 	end
 )
 
@@ -2391,6 +2611,7 @@ progressBackground.InputBegan:Connect(
 
 		if input.UserInputType ~=
 			Enum.UserInputType.MouseButton1 then
+
 			return
 		end
 
@@ -2405,7 +2626,7 @@ progressBackground.InputBegan:Connect(
 		local ratio =
 			math.clamp(
 				x /
-					progressBackground.AbsoluteSize.X,
+				progressBackground.AbsoluteSize.X,
 				0,
 				1
 			)
@@ -2420,14 +2641,17 @@ progressBackground.InputBegan:Connect(
 -- VISUALIZER
 --==================================================
 
-local visualTime = 0
+local visualTime =
+	0
 
 RunService.RenderStepped:Connect(
 	function(dt)
 
-		visualTime += dt
+		visualTime +=
+			dt
 
-		local loudness = 0
+		local loudness =
+			0
 
 		if musicPlayer.IsPlaying then
 
@@ -2441,18 +2665,21 @@ RunService.RenderStepped:Connect(
 							0,
 							1
 						)
-
 				end
 			)
 		end
 
-		for i, bar in ipairs(bars) do
+		for i, bar in ipairs(
+			bars
+		) do
 
 			local wave =
 				(
 					math.sin(
-						visualTime * 4 +
-						i * 0.45
+						visualTime *
+							4 +
+						i *
+							0.45
 					)
 					+ 1
 				) * 0.5
@@ -2460,8 +2687,10 @@ RunService.RenderStepped:Connect(
 			local wave2 =
 				(
 					math.sin(
-						visualTime * 7 -
-						i * 0.25
+						visualTime *
+							7 -
+						i *
+							0.25
 					)
 					+ 1
 				) * 0.5
@@ -2475,15 +2704,18 @@ RunService.RenderStepped:Connect(
 					loudness *
 					(
 						0.2 +
-						wave * 0.5 +
-						wave2 * 0.2
+						wave *
+							0.5 +
+						wave2 *
+							0.2
 					)
 
 			else
 
 				height =
 					0.04 +
-					wave * 0.04
+					wave *
+						0.04
 			end
 
 			height =
@@ -2495,7 +2727,9 @@ RunService.RenderStepped:Connect(
 
 			bar.Size =
 				UDim2.new(
-					1 / BAR_COUNT * 0.7,
+					1 /
+						BAR_COUNT *
+						0.7,
 					0,
 					height,
 					0
@@ -2514,29 +2748,39 @@ RunService.RenderStepped:Connect(
 				string.format(
 					"%02d:%02d / %02d:%02d",
 					math.floor(
-						current / 60
+						current /
+							60
 					),
 					math.floor(
 						current
 					) % 60,
 					math.floor(
-						total / 60
+						total /
+							60
 					),
 					math.floor(
 						total
 					) % 60
 				)
 
-			visualStatus.Text =
-				musicPlayer.IsPlaying
-				and "PLAYING"
-				or "READY"
+			progressFill.Size =
+				UDim2.new(
+					math.clamp(
+						current /
+							total,
+						0,
+						1
+					),
+					0,
+					1,
+					0
+				)
 		end
 	end
 )
 
 --==================================================
--- ENFORCEMENT
+-- AUDIO ENFORCEMENT
 --==================================================
 
 local audioLock =
@@ -2559,21 +2803,30 @@ local audioLock =
 	)
 
 --==================================================
--- REVEAL
+-- WAIT FOR CHARACTER MOVE
 --==================================================
 
 characterMoveTween.Completed:Wait()
 
-task.wait(0.75)
+task.wait(
+	0.75
+)
+
+--==================================================
+-- REVEAL
+--==================================================
 
 local zoomOut =
 	TweenService:Create(
+
 		zoomScale,
+
 		TweenInfo.new(
 			1.8,
 			Enum.EasingStyle.Sine,
 			Enum.EasingDirection.Out
 		),
+
 		{
 			Scale =
 				originalScale
@@ -2582,12 +2835,15 @@ local zoomOut =
 
 local blackOut =
 	TweenService:Create(
+
 		blackScreen,
+
 		TweenInfo.new(
 			1.8,
 			Enum.EasingStyle.Sine,
 			Enum.EasingDirection.Out
 		),
+
 		{
 			BackgroundTransparency =
 				1
@@ -2641,6 +2897,8 @@ say(
 --==================================================
 
 forceHiddenObjects()
+forceSecretLabelHidden()
+forceThankYou()
 forceCharacterAppearance()
 forceMainUILayering()
 
@@ -2648,7 +2906,8 @@ forceMainUILayering()
 -- UNLOCK
 --==================================================
 
-interactionLocked = false
+interactionLocked =
+	false
 
 if guiLockConnection then
 	guiLockConnection:Disconnect()
@@ -2667,7 +2926,8 @@ restoreGui()
 player.CharacterRemoving:Connect(
 	function()
 
-		musicActive = false
+		musicActive =
+			false
 
 		if audioLock then
 			audioLock:Disconnect()
@@ -2685,10 +2945,5 @@ player.CharacterRemoving:Connect(
 			studio:Destroy()
 		end
 
-		if blueBackground
-			and blueBackground.Parent then
-
-			blueBackground:Destroy()
-		end
 	end
 )

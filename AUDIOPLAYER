@@ -1,0 +1,635 @@
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local mainUI = playerGui:WaitForChild("MainUI")
+
+--==================================================
+-- EXISTING DIALOGUE
+--==================================================
+
+local baseFrame =
+	mainUI
+		:WaitForChild("SurfaceScreen")
+		:WaitForChild("BaseHolder")
+		:WaitForChild("BaseFrame")
+
+local layer1Group =
+	baseFrame:WaitForChild("Layer1Group")
+
+local layer2Group =
+	baseFrame:WaitForChild("Layer2Group")
+
+local dialogueLabel =
+	layer1Group:FindFirstChild("DialogueLabel", true)
+
+local dialogueFrame =
+	layer2Group
+		:WaitForChild("BaseGroup")
+		:WaitForChild("GameFrame")
+		:WaitForChild("DialogueFrame")
+
+local requestSpeech =
+	dialogueFrame:WaitForChild("RequestSpeech")
+
+local characterVoice =
+	mainUI:FindFirstChild("Character_Voice", true)
+
+if not dialogueLabel then
+	warn("DialogueLabel not found")
+	return
+end
+
+if not characterVoice or not characterVoice:IsA("Sound") then
+	warn("Character_Voice not found")
+	return
+end
+
+--==================================================
+-- MUSIC PLAYER
+--==================================================
+
+local musicPlayer = Instance.new("Sound")
+musicPlayer.Name = "MusicPlayer"
+musicPlayer.Looped = true
+musicPlayer.Volume = 1
+musicPlayer.PlaybackSpeed = 1
+musicPlayer.Parent = playerGui
+
+local distortion = Instance.new("DistortionSoundEffect")
+distortion.Name = "MusicDistortion"
+distortion.Level = 0
+distortion.Parent = musicPlayer
+
+--==================================================
+-- SOUNDS TO DISABLE
+--==================================================
+
+local soundsToDisable = {
+	"Amb",
+	"Level1",
+	"Level2",
+	"GameOver",
+	"Final"
+}
+
+local function stopGameSounds()
+	for _, soundName in ipairs(soundsToDisable) do
+		local sound = mainUI:FindFirstChild(soundName, true)
+
+		if sound and sound:IsA("Sound") then
+			sound:Stop()
+			sound.Volume = 0
+		end
+	end
+end
+
+--==================================================
+-- GUI
+--==================================================
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "C9HZZMusicPlayer"
+gui.ResetOnSpawn = false
+gui.IgnoreGuiInset = true
+gui.Parent = playerGui
+
+local main = Instance.new("Frame")
+main.Name = "Main"
+main.Size = UDim2.fromOffset(400, 430)
+main.AnchorPoint = Vector2.new(1, 0)
+main.Position = UDim2.new(1, -20, 0, 20)
+main.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+main.BorderSizePixel = 0
+main.Parent = gui
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 10)
+corner.Parent = main
+
+--==================================================
+-- TITLE / DRAG BAR
+--==================================================
+
+local title = Instance.new("TextButton")
+title.Name = "Title"
+title.Size = UDim2.new(1, -30, 0, 35)
+title.Position = UDim2.fromOffset(15, 12)
+title.BackgroundTransparency = 1
+title.Text = "C9HZZ MUSIC PLAYER"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextSize = 20
+title.Font = Enum.Font.GothamBold
+title.AutoButtonColor = false
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.Parent = main
+
+--==================================================
+-- DRAGGING
+--==================================================
+
+local dragging = false
+local dragStart
+local startPosition
+
+title.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1
+		or input.UserInputType == Enum.UserInputType.Touch then
+
+		dragging = true
+		dragStart = input.Position
+		startPosition = main.Position
+	end
+end)
+
+title.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1
+		or input.UserInputType == Enum.UserInputType.Touch then
+
+		dragging = false
+	end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if not dragging then
+		return
+	end
+
+	if input.UserInputType ~= Enum.UserInputType.MouseMovement
+		and input.UserInputType ~= Enum.UserInputType.Touch then
+		return
+	end
+
+	local delta = input.Position - dragStart
+
+	main.Position = UDim2.new(
+		startPosition.X.Scale,
+		startPosition.X.Offset + delta.X,
+		startPosition.Y.Scale,
+		startPosition.Y.Offset + delta.Y
+	)
+end)
+
+--==================================================
+-- ID LABEL
+--==================================================
+
+local idLabel = Instance.new("TextLabel")
+idLabel.Size = UDim2.new(1, -30, 0, 22)
+idLabel.Position = UDim2.fromOffset(15, 55)
+idLabel.BackgroundTransparency = 1
+idLabel.Text = "Audio Asset ID"
+idLabel.TextColor3 = Color3.fromRGB(190, 190, 190)
+idLabel.TextSize = 14
+idLabel.Font = Enum.Font.Gotham
+idLabel.TextXAlignment = Enum.TextXAlignment.Left
+idLabel.Parent = main
+
+--==================================================
+-- ID BOX
+--==================================================
+
+local idBox = Instance.new("TextBox")
+idBox.Name = "IDBox"
+idBox.Size = UDim2.new(1, -30, 0, 38)
+idBox.Position = UDim2.fromOffset(15, 78)
+idBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+idBox.BorderSizePixel = 0
+idBox.PlaceholderText = "Enter Roblox audio ID..."
+idBox.Text = ""
+idBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+idBox.PlaceholderColor3 = Color3.fromRGB(130, 130, 130)
+idBox.TextSize = 15
+idBox.Font = Enum.Font.Gotham
+idBox.ClearTextOnFocus = false
+idBox.Parent = main
+
+local idCorner = Instance.new("UICorner")
+idCorner.CornerRadius = UDim.new(0, 6)
+idCorner.Parent = idBox
+
+local idPadding = Instance.new("UIPadding")
+idPadding.PaddingLeft = UDim.new(0, 10)
+idPadding.PaddingRight = UDim.new(0, 10)
+idPadding.Parent = idBox
+
+--==================================================
+-- CREATE LABEL HELPER
+--==================================================
+
+local function createLabel(text, y)
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.new(1, -30, 0, 20)
+	label.Position = UDim2.fromOffset(15, y)
+	label.BackgroundTransparency = 1
+	label.Text = text
+	label.TextColor3 = Color3.fromRGB(180, 180, 180)
+	label.TextSize = 13
+	label.Font = Enum.Font.Gotham
+	label.TextXAlignment = Enum.TextXAlignment.Left
+	label.Parent = main
+	return label
+end
+
+local function createBox(placeholder, y)
+	local box = Instance.new("TextBox")
+	box.Size = UDim2.new(1, -30, 0, 34)
+	box.Position = UDim2.fromOffset(15, y)
+	box.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+	box.BorderSizePixel = 0
+	box.PlaceholderText = placeholder
+	box.Text = ""
+	box.TextColor3 = Color3.fromRGB(255, 255, 255)
+	box.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
+	box.TextSize = 14
+	box.Font = Enum.Font.Gotham
+	box.ClearTextOnFocus = false
+	box.Parent = main
+
+	local c = Instance.new("UICorner")
+	c.CornerRadius = UDim.new(0, 6)
+	c.Parent = box
+
+	local p = Instance.new("UIPadding")
+	p.PaddingLeft = UDim.new(0, 10)
+	p.PaddingRight = UDim.new(0, 10)
+	p.Parent = box
+
+	return box
+end
+
+--==================================================
+-- CONTROL INPUTS
+--==================================================
+
+createLabel("Volume (0 - 1)", 123)
+local volumeBox = createBox("1", 144)
+
+createLabel("Playback Speed (0.05 - 3)", 181)
+local speedBox = createBox("1", 202)
+
+createLabel("Pitch (0.05 - 3)", 239)
+local pitchBox = createBox("1", 260)
+
+createLabel("Time Position (seconds)", 297)
+local timeBox = createBox("0", 318)
+
+createLabel("Distortion (0 - 1)", 355)
+local distortionBox = createBox("0", 376)
+
+--==================================================
+-- PLAY / STOP
+--==================================================
+
+local playButton = Instance.new("TextButton")
+playButton.Name = "PlayButton"
+playButton.Size = UDim2.new(0.47, -8, 0, 40)
+playButton.Position = UDim2.fromOffset(15, 415)
+playButton.BackgroundColor3 = Color3.fromRGB(50, 160, 80)
+playButton.BorderSizePixel = 0
+playButton.Text = "PLAY"
+playButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+playButton.TextSize = 15
+playButton.Font = Enum.Font.GothamBold
+playButton.Parent = main
+
+local playCorner = Instance.new("UICorner")
+playCorner.CornerRadius = UDim.new(0, 6)
+playCorner.Parent = playButton
+
+local stopButton = Instance.new("TextButton")
+stopButton.Name = "StopButton"
+stopButton.Size = UDim2.new(0.47, -8, 0, 40)
+stopButton.Position = UDim2.new(0.53, 0, 0, 415)
+stopButton.BackgroundColor3 = Color3.fromRGB(170, 50, 50)
+stopButton.BorderSizePixel = 0
+stopButton.Text = "STOP"
+stopButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+stopButton.TextSize = 15
+stopButton.Font = Enum.Font.GothamBold
+stopButton.Parent = main
+
+local stopCorner = Instance.new("UICorner")
+stopCorner.CornerRadius = UDim.new(0, 6)
+stopCorner.Parent = stopButton
+
+--==================================================
+-- STATUS
+--==================================================
+
+local status = Instance.new("TextLabel")
+status.Name = "Status"
+status.Size = UDim2.new(1, -30, 0, 35)
+status.Position = UDim2.fromOffset(15, 460)
+status.BackgroundTransparency = 1
+status.Text = "Waiting for an audio ID..."
+status.TextColor3 = Color3.fromRGB(160, 160, 160)
+status.TextSize = 12
+status.Font = Enum.Font.Gotham
+status.TextWrapped = true
+status.Parent = main
+
+--==================================================
+-- DIALOGUE
+--==================================================
+
+local function say(text, duration)
+	text = tostring(text)
+	duration = duration or 2
+
+	dialogueLabel.AutoLocalize = false
+	dialogueLabel.Text = text
+	dialogueLabel.Parent.Visible = true
+
+	pcall(function()
+		requestSpeech:Invoke(
+			{
+				{
+					text,
+					{
+						IgnoreLocalize = true
+					}
+				}
+			},
+			false,
+			duration,
+			characterVoice
+		)
+	end)
+
+	if characterVoice.IsPlaying then
+		characterVoice:Stop()
+	end
+
+	dialogueLabel.Text = ""
+	dialogueLabel.Parent.Visible = false
+
+	task.wait(0.15)
+end
+
+--==================================================
+-- NUMBER PARSER
+--==================================================
+
+local function getNumber(box, default, minimum, maximum)
+	local value = tonumber(box.Text)
+
+	if not value then
+		value = default
+	end
+
+	return math.clamp(value, minimum, maximum)
+end
+
+--==================================================
+-- APPLY CONTROLS
+--==================================================
+
+local function applyControls()
+	musicPlayer.Volume =
+		getNumber(volumeBox, 1, 0, 1)
+
+	musicPlayer.PlaybackSpeed =
+		getNumber(speedBox, 1, 0.05, 3)
+
+	-- Roblox Sound.Pitch
+	musicPlayer.Pitch =
+		getNumber(pitchBox, 1, 0.05, 3)
+
+	musicPlayer.TimePosition =
+		math.max(
+			0,
+			getNumber(
+				timeBox,
+				0,
+				0,
+				musicPlayer.TimeLength > 0
+					and musicPlayer.TimeLength
+					or math.huge
+			)
+		)
+
+	distortion.Level =
+		getNumber(
+			distortionBox,
+			0,
+			0,
+			1
+		)
+end
+
+--==================================================
+-- LIVE CONTROL UPDATES
+--==================================================
+
+volumeBox.FocusLost:Connect(function()
+	applyControls()
+end)
+
+speedBox.FocusLost:Connect(function()
+	applyControls()
+end)
+
+pitchBox.FocusLost:Connect(function()
+	applyControls()
+end)
+
+timeBox.FocusLost:Connect(function()
+	applyControls()
+end)
+
+distortionBox.FocusLost:Connect(function()
+	applyControls()
+end)
+
+--==================================================
+-- MUSIC ENFORCER
+--==================================================
+
+local musicActive = false
+
+local soundLock =
+	RunService.Heartbeat:Connect(function()
+
+		if not musicActive then
+			return
+		end
+
+		stopGameSounds()
+
+		musicPlayer.Looped = true
+
+		if not musicPlayer.IsPlaying then
+			musicPlayer:Play()
+		end
+	end)
+
+--==================================================
+-- PLAY MUSIC
+--==================================================
+
+local playing = false
+
+local function playMusic(id)
+
+	id = tostring(id)
+
+	if id == "" then
+		status.Text = "Enter an audio ID first."
+		return
+	end
+
+	if not string.match(id, "^rbxassetid://") then
+		id = "rbxassetid://" .. id
+	end
+
+	playing = false
+	musicActive = false
+
+	musicPlayer:Stop()
+
+	musicPlayer.SoundId = id
+	musicPlayer.Volume = getNumber(volumeBox, 1, 0, 1)
+	musicPlayer.PlaybackSpeed =
+		getNumber(speedBox, 1, 0.05, 3)
+	musicPlayer.Pitch =
+		getNumber(pitchBox, 1, 0.05, 3)
+	musicPlayer.TimePosition =
+		math.max(0, tonumber(timeBox.Text) or 0)
+
+	distortion.Level =
+		getNumber(distortionBox, 0, 0, 1)
+
+	status.Text = "Initializing audio..."
+
+	stopGameSounds()
+
+	say(
+		"Initializing music player.",
+		2
+	)
+
+	say(
+		"Preparing the requested audio.",
+		2
+	)
+
+	say(
+		"Checking the audio source.",
+		2
+	)
+
+	if not musicPlayer.IsLoaded then
+
+		status.Text = "Loading audio..."
+
+		local loaded = false
+
+		local connection
+
+		connection =
+			musicPlayer.Loaded:Connect(function()
+				loaded = true
+			end)
+
+		local startedAt = os.clock()
+
+		while not loaded
+			and not musicPlayer.IsLoaded
+			and os.clock() - startedAt < 10 do
+
+			task.wait(0.1)
+		end
+
+		if connection then
+			connection:Disconnect()
+		end
+	end
+
+	if not musicPlayer.IsLoaded then
+
+		status.Text =
+			"Audio failed to load."
+
+		say(
+			"The audio could not be loaded.",
+			2.5
+		)
+
+		return
+	end
+
+	say(
+		"Audio source loaded successfully.",
+		2
+	)
+
+	say(
+		"Starting playback now.",
+		2
+	)
+
+	applyControls()
+
+	musicPlayer:Play()
+
+	musicActive = true
+	playing = true
+
+	status.Text =
+		"Playing: " .. musicPlayer.SoundId
+end
+
+--==================================================
+-- BUTTON EVENTS
+--==================================================
+
+playButton.Activated:Connect(function()
+
+	if playing then
+		musicPlayer:Stop()
+		playing = false
+	end
+
+	playMusic(idBox.Text)
+end)
+
+stopButton.Activated:Connect(function()
+
+	musicActive = false
+
+	musicPlayer:Stop()
+
+	stopGameSounds()
+
+	playing = false
+
+	status.Text =
+		"Playback stopped."
+
+	say(
+		"Music stopped.",
+		1.5
+	)
+end)
+
+--==================================================
+-- CLEANUP
+--==================================================
+
+player.CharacterRemoving:Connect(function()
+
+	musicActive = false
+
+	if soundLock then
+		soundLock:Disconnect()
+	end
+
+	musicPlayer:Stop()
+
+	if gui then
+		gui:Destroy()
+	end
+end)

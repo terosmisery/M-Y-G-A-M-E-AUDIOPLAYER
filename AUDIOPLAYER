@@ -12,14 +12,9 @@ local mainUI = playerGui:WaitForChild("MainUI")
 -- EXISTING UI
 --==================================================
 
-local amb =
-	mainUI:WaitForChild("Amb")
-
-local level1 =
-	mainUI:WaitForChild("Level1")
-
-local level2 =
-	mainUI:WaitForChild("Level2")
+local amb = mainUI:WaitForChild("Amb")
+local level1 = mainUI:WaitForChild("Level1")
+local level2 = mainUI:WaitForChild("Level2")
 
 local surfaceScreen =
 	mainUI:WaitForChild("SurfaceScreen")
@@ -37,10 +32,7 @@ local layer2Group =
 	baseFrame:WaitForChild("Layer2Group")
 
 local dialogueLabel =
-	layer1Group:FindFirstChild(
-		"DialogueLabel",
-		true
-	)
+	layer1Group:FindFirstChild("DialogueLabel", true)
 
 local dialogueFrame =
 	layer2Group
@@ -49,24 +41,17 @@ local dialogueFrame =
 		:WaitForChild("DialogueFrame")
 
 local requestSpeech =
-	dialogueFrame:WaitForChild(
-		"RequestSpeech"
-	)
+	dialogueFrame:WaitForChild("RequestSpeech")
 
 local characterVoice =
-	mainUI:FindFirstChild(
-		"Character_Voice",
-		true
-	)
+	mainUI:FindFirstChild("Character_Voice", true)
 
 if not dialogueLabel then
 	warn("DialogueLabel not found")
 	return
 end
 
-if not characterVoice
-	or not characterVoice:IsA("Sound") then
-
+if not characterVoice or not characterVoice:IsA("Sound") then
 	warn("Character_Voice not found")
 	return
 end
@@ -82,70 +67,48 @@ local eyeLabel =
 	head:WaitForChild("EyeLabel")
 
 local secretLabel =
-	eyeLabel:WaitForChild(
-		"SecretLabel"
-	)
+	eyeLabel:WaitForChild("SecretLabel")
 
 local thankYou =
-	layer1Group:FindFirstChild(
-		"ThankYou",
-		true
-	)
+	layer1Group:FindFirstChild("ThankYou", true)
 
 --==================================================
 -- STATIC LABEL
--- DO NOT MODIFY IT OR ITS CHILDREN.
+-- DO NOT MODIFY IT OR ITS CHILDREN
 --==================================================
 
 local staticLabel =
-	baseFrame:WaitForChild(
-		"StaticLabel"
-	)
+	baseFrame:WaitForChild("StaticLabel")
 
 local function isInsideStaticLabel(obj)
-
 	if obj == staticLabel then
 		return true
 	end
 
-	return obj:IsDescendantOf(
-		staticLabel
-	)
+	return obj:IsDescendantOf(staticLabel)
 end
 
 --==================================================
--- OUTER BASEHOLDER CLEANUP
+-- OUTER BASEHOLDER IMAGEBUTTON CLEANUP
 --==================================================
 
 local outerBaseHolder
 
-for _, child in ipairs(
-	mainUI:GetChildren()
-) do
-
+for _, child in ipairs(mainUI:GetChildren()) do
 	if child.Name == "BaseHolder"
 		and child ~= surfaceBaseHolder then
 
-		outerBaseHolder =
-			child
-
+		outerBaseHolder = child
 		break
 	end
 end
 
 if outerBaseHolder then
-
 	local outerBaseFrame =
-		outerBaseHolder:FindFirstChild(
-			"BaseFrame"
-		)
+		outerBaseHolder:FindFirstChild("BaseFrame")
 
 	if outerBaseFrame then
-
-		for _, obj in ipairs(
-			outerBaseFrame:GetDescendants()
-		) do
-
+		for _, obj in ipairs(outerBaseFrame:GetDescendants()) do
 			if obj:IsA("ImageButton") then
 				obj:Destroy()
 			end
@@ -167,22 +130,16 @@ local forcedHiddenNames = {
 }
 
 local function forceHiddenObjects()
-
-	for _, obj in ipairs(
-		mainUI:GetDescendants()
-	) do
+	for _, obj in ipairs(mainUI:GetDescendants()) do
 
 		if isInsideStaticLabel(obj) then
 			continue
 		end
 
 		local lowerName =
-			string.lower(
-				obj.Name
-			)
+			string.lower(obj.Name)
 
 		if forcedHiddenNames[lowerName] then
-
 			if obj:IsA("GuiObject") then
 				obj.Visible = false
 			end
@@ -197,28 +154,24 @@ end
 
 local function forceSecretLabelHidden()
 
-	secretLabel.Visible =
-		false
+	secretLabel.Visible = false
 
 	if secretLabel:IsA("ImageLabel")
 		or secretLabel:IsA("ImageButton") then
 
-		secretLabel.ImageTransparency =
-			1
+		secretLabel.ImageTransparency = 1
 	end
 
 	if secretLabel:IsA("TextLabel")
 		or secretLabel:IsA("TextButton") then
 
-		secretLabel.TextTransparency =
-			1
+		secretLabel.TextTransparency = 1
 	end
 end
 
 --==================================================
 -- THANK YOU
--- WHITE BACKGROUND
--- BLACK IMAGE
+-- WHITE BACKGROUND / BLACK IMAGE
 --==================================================
 
 local function forceThankYou()
@@ -229,11 +182,9 @@ local function forceThankYou()
 
 	if thankYou:IsA("GuiObject") then
 
-		thankYou.Visible =
-			true
+		thankYou.Visible = true
 
-		thankYou.BackgroundTransparency =
-			0
+		thankYou.BackgroundTransparency = 0
 
 		thankYou.BackgroundColor3 =
 			Color3.fromRGB(
@@ -242,16 +193,14 @@ local function forceThankYou()
 				255
 			)
 
-		-- Keep it above the DJ panel.
-		thankYou.ZIndex =
-			502
+		-- Below the character, above the DJ studio.
+		thankYou.ZIndex = 600
 	end
 
 	if thankYou:IsA("ImageLabel")
 		or thankYou:IsA("ImageButton") then
 
-		thankYou.ImageTransparency =
-			0
+		thankYou.ImageTransparency = 0
 
 		thankYou.ImageColor3 =
 			Color3.fromRGB(
@@ -267,7 +216,6 @@ end
 --==================================================
 
 local characterColors = {
-
 	Head =
 		Color3.fromRGB(
 			55,
@@ -313,9 +261,54 @@ local characterColors = {
 
 local function forceCharacterAppearance()
 
-	for partName, blueColor in pairs(
-		characterColors
-	) do
+	--==================================================
+	-- EYE LABEL YELLOW
+	--==================================================
+
+	if eyeLabel:IsA("GuiObject") then
+		eyeLabel.Visible = true
+		eyeLabel.ZIndex = 700
+	end
+
+	if eyeLabel:IsA("ImageLabel")
+		or eyeLabel:IsA("ImageButton") then
+
+		eyeLabel.ImageColor3 =
+			Color3.fromRGB(
+				255,
+				255,
+				0
+			)
+
+		eyeLabel.ImageTransparency = 0
+
+	elseif eyeLabel:IsA("Frame") then
+
+		eyeLabel.BackgroundColor3 =
+			Color3.fromRGB(
+				255,
+				255,
+				0
+			)
+
+	elseif eyeLabel:IsA("TextLabel")
+		or eyeLabel:IsA("TextButton") then
+
+		eyeLabel.TextColor3 =
+			Color3.fromRGB(
+				255,
+				255,
+				0
+			)
+
+		eyeLabel.TextTransparency = 0
+	end
+
+	--==================================================
+	-- CHARACTER PARTS
+	--==================================================
+
+	for partName, blueColor in pairs(characterColors) do
 
 		local part =
 			layer1Group:FindFirstChild(
@@ -328,72 +321,74 @@ local function forceCharacterAppearance()
 		end
 
 		if part:IsA("GuiObject") then
-
-			part.Visible =
-				true
-
-			part.ZIndex =
-				500
+			part.Visible = true
+			part.ZIndex = 800
 		end
 
 		if part:IsA("ImageLabel")
 			or part:IsA("ImageButton") then
 
-			part.ImageColor3 =
-				blueColor
-
-			part.ImageTransparency =
-				0
+			part.ImageColor3 = blueColor
+			part.ImageTransparency = 0
 
 		elseif part:IsA("Frame") then
 
-			part.BackgroundColor3 =
-				blueColor
+			part.BackgroundColor3 = blueColor
 
 		elseif part:IsA("TextLabel")
 			or part:IsA("TextButton") then
 
-			part.TextColor3 =
-				blueColor
+			part.TextColor3 = blueColor
+			part.TextTransparency = 0
 		end
 
-		for _, child in ipairs(
-			part:GetDescendants()
-		) do
+		-- All children remain above ThankYou.
+		for _, child in ipairs(part:GetDescendants()) do
 
 			if child:IsA("GuiObject") then
-
-				child.Visible =
-					true
-
-				child.ZIndex =
-					501
+				child.Visible = true
+				child.ZIndex = 801
 			end
 
 			if child:IsA("ImageLabel")
 				or child:IsA("ImageButton") then
 
-				child.ImageColor3 =
-					blueColor
-
-				child.ImageTransparency =
-					0
+				child.ImageColor3 = blueColor
+				child.ImageTransparency = 0
 
 			elseif child:IsA("Frame") then
 
-				child.BackgroundColor3 =
-					blueColor
+				child.BackgroundColor3 = blueColor
 
 			elseif child:IsA("TextLabel")
 				or child:IsA("TextButton") then
 
-				child.TextColor3 =
-					blueColor
+				child.TextColor3 = blueColor
+				child.TextTransparency = 0
 			end
 		end
 	end
 
-	-- ThankYou should remain above the DJ panel.
+	-- EyeLabel children above ThankYou,
+	-- except SecretLabel, which stays hidden.
+	for _, child in ipairs(eyeLabel:GetDescendants()) do
+
+		if child == secretLabel
+			or child:IsDescendantOf(secretLabel) then
+
+			continue
+		end
+
+		if child:IsA("GuiObject") then
+			child.ZIndex = 802
+			child.Visible = true
+		end
+	end
+
+	-- SecretLabel gets its own final enforcement.
+	forceSecretLabelHidden()
+
+	-- ThankYou remains below the character.
 	forceThankYou()
 end
 
@@ -401,23 +396,32 @@ end
 -- MAIN UI LAYERING
 --==================================================
 
+local studio
+
 local function forceMainUILayering()
 
-	for _, obj in ipairs(
-		mainUI:GetDescendants()
-	) do
+	for _, obj in ipairs(mainUI:GetDescendants()) do
+
+		if obj == studio then
+			continue
+		end
 
 		if isInsideStaticLabel(obj) then
 			continue
 		end
 
 		if obj:IsA("GuiObject")
-			and obj ~= studio
 			and obj.ZIndex < 2 then
 
-			obj.ZIndex =
-				2
+			obj.ZIndex = 2
 		end
+	end
+
+	forceThankYou()
+	forceCharacterAppearance()
+
+	if studio and studio.Parent then
+		studio.ZIndex = 100
 	end
 end
 
@@ -431,17 +435,14 @@ forceMainUILayering()
 -- INPUT LOCK
 --==================================================
 
-local interactionLocked =
-	true
+local interactionLocked = true
 
 local lockedButtons = {}
 local lockedTextBoxes = {}
 
 local function enforceGuiLock()
 
-	for _, obj in ipairs(
-		mainUI:GetDescendants()
-	) do
+	for _, obj in ipairs(mainUI:GetDescendants()) do
 
 		if isInsideStaticLabel(obj) then
 			continue
@@ -452,108 +453,70 @@ local function enforceGuiLock()
 			if not lockedButtons[obj] then
 
 				lockedButtons[obj] = {
-					Active =
-						obj.Active,
-
-					Selectable =
-						obj.Selectable,
-
-					AutoButtonColor =
-						obj.AutoButtonColor
+					Active = obj.Active,
+					Selectable = obj.Selectable,
+					AutoButtonColor = obj.AutoButtonColor
 				}
 			end
 
-			obj.Active =
-				false
-
-			obj.Selectable =
-				false
-
-			obj.AutoButtonColor =
-				false
+			obj.Active = false
+			obj.Selectable = false
+			obj.AutoButtonColor = false
 
 		elseif obj:IsA("TextBox") then
 
 			if not lockedTextBoxes[obj] then
 
 				lockedTextBoxes[obj] = {
-					Active =
-						obj.Active,
-
-					TextEditable =
-						obj.TextEditable
+					Active = obj.Active,
+					TextEditable = obj.TextEditable
 				}
 			end
 
-			obj.Active =
-				false
-
-			obj.TextEditable =
-				false
+			obj.Active = false
+			obj.TextEditable = false
 		end
 	end
 end
 
 local function restoreGui()
 
-	for obj, state in pairs(
-		lockedButtons
-	) do
+	for obj, state in pairs(lockedButtons) do
 
 		if obj and obj.Parent then
-
-			obj.Active =
-				state.Active
-
-			obj.Selectable =
-				state.Selectable
-
-			obj.AutoButtonColor =
-				state.AutoButtonColor
+			obj.Active = state.Active
+			obj.Selectable = state.Selectable
+			obj.AutoButtonColor = state.AutoButtonColor
 		end
 	end
 
-	for obj, state in pairs(
-		lockedTextBoxes
-	) do
+	for obj, state in pairs(lockedTextBoxes) do
 
 		if obj and obj.Parent then
-
-			obj.Active =
-				state.Active
-
-			obj.TextEditable =
-				state.TextEditable
+			obj.Active = state.Active
+			obj.TextEditable = state.TextEditable
 		end
 	end
 
-	table.clear(
-		lockedButtons
-	)
-
-	table.clear(
-		lockedTextBoxes
-	)
+	table.clear(lockedButtons)
+	table.clear(lockedTextBoxes)
 end
 
 enforceGuiLock()
 
 local guiLockConnection =
-	RunService.Heartbeat:Connect(
-		function()
+	RunService.Heartbeat:Connect(function()
 
-			if interactionLocked then
-				enforceGuiLock()
-			end
-
-			forceHiddenObjects()
-			forceSecretLabelHidden()
-			forceThankYou()
-			forceCharacterAppearance()
-			forceMainUILayering()
-
+		if interactionLocked then
+			enforceGuiLock()
 		end
-	)
+
+		forceHiddenObjects()
+		forceSecretLabelHidden()
+		forceThankYou()
+		forceCharacterAppearance()
+		forceMainUILayering()
+	end)
 
 --==================================================
 -- INPUT SINK
@@ -604,84 +567,57 @@ level2.Volume = 0
 -- DIALOGUE
 --==================================================
 
-local function say(
-	text,
-	duration,
-	playbackSpeed
-)
+local function say(text, duration, playbackSpeed)
 
-	text =
-		tostring(text)
-
-	duration =
-		duration or 3
+	text = tostring(text)
+	duration = duration or 3
 
 	local oldSpeed =
 		characterVoice.PlaybackSpeed
 
 	if playbackSpeed then
-
-		characterVoice.PlaybackSpeed =
-			playbackSpeed
+		characterVoice.PlaybackSpeed = playbackSpeed
 	end
 
-	dialogueLabel.AutoLocalize =
-		false
+	dialogueLabel.AutoLocalize = false
+	dialogueLabel.Text = text
+	dialogueLabel.Parent.Visible = true
 
-	dialogueLabel.Text =
-		text
+	pcall(function()
 
-	dialogueLabel.Parent.Visible =
-		true
-
-	pcall(
-		function()
-
-			requestSpeech:Invoke(
-
+		requestSpeech:Invoke(
+			{
 				{
+					text,
 					{
-						text,
-						{
-							IgnoreLocalize =
-								true
-						}
+						IgnoreLocalize = true
 					}
-				},
+				}
+			},
+			false,
+			duration,
+			characterVoice
+		)
 
-				false,
-				duration,
-				characterVoice
-			)
-
-		end
-	)
+	end)
 
 	if characterVoice.IsPlaying then
 		characterVoice:Stop()
 	end
 
-	characterVoice.PlaybackSpeed =
-		oldSpeed
+	characterVoice.PlaybackSpeed = oldSpeed
 
-	dialogueLabel.Text =
-		""
+	dialogueLabel.Text = ""
+	dialogueLabel.Parent.Visible = false
 
-	dialogueLabel.Parent.Visible =
-		false
-
-	task.wait(
-		0.15
-	)
+	task.wait(0.15)
 end
 
 --==================================================
 -- INTRO
 --==================================================
 
-task.wait(
-	0.5
-)
+task.wait(0.5)
 
 say(
 	"Initializing audio studio.",
@@ -703,20 +639,13 @@ say(
 	2
 )
 
-level1.Volume =
-	0
-
-level1.PlaybackSpeed =
-	1
-
-level1.Looped =
-	true
-
+level1.Volume = 0
+level1.PlaybackSpeed = 1
+level1.Looped = true
 level1:Play()
 
 local speedTween =
 	TweenService:Create(
-
 		level1,
 
 		TweenInfo.new(
@@ -726,14 +655,12 @@ local speedTween =
 		),
 
 		{
-			PlaybackSpeed =
-				0.5
+			PlaybackSpeed = 0.5
 		}
 	)
 
 local volumeTween =
 	TweenService:Create(
-
 		level1,
 
 		TweenInfo.new(
@@ -743,8 +670,7 @@ local volumeTween =
 		),
 
 		{
-			Volume =
-				1
+			Volume = 1
 		}
 	)
 
@@ -760,7 +686,6 @@ say(
 
 local musicFade =
 	TweenService:Create(
-
 		level1,
 
 		TweenInfo.new(
@@ -770,8 +695,7 @@ local musicFade =
 		),
 
 		{
-			Volume =
-				0
+			Volume = 0
 		}
 	)
 
@@ -779,12 +703,10 @@ musicFade:Play()
 musicFade.Completed:Wait()
 
 level1:Stop()
-level1.Volume =
-	0
+level1.Volume = 0
 
 level2:Stop()
-level2.Volume =
-	0
+level2.Volume = 0
 
 say(
 	"Background audio disabled.",
@@ -812,11 +734,7 @@ blackScreen.Name =
 	"C9HZZAudioTransition"
 
 blackScreen.BackgroundColor3 =
-	Color3.new(
-		0,
-		0,
-		0
-	)
+	Color3.new(0, 0, 0)
 
 blackScreen.BackgroundTransparency =
 	1
@@ -826,18 +744,14 @@ blackScreen.BorderSizePixel =
 
 blackScreen.Size =
 	UDim2.new(
-		1,
-		0,
-		1,
-		0
+		1, 0,
+		1, 0
 	)
 
 blackScreen.Position =
 	UDim2.new(
-		0,
-		0,
-		0,
-		0
+		0, 0,
+		0, 0
 	)
 
 blackScreen.ZIndex =
@@ -855,8 +769,7 @@ local zoomScale =
 		"C9HZZAudioScale"
 	)
 
-local createdScale =
-	false
+local createdScale = false
 
 if not zoomScale then
 
@@ -872,8 +785,7 @@ if not zoomScale then
 	zoomScale.Parent =
 		baseFrame
 
-	createdScale =
-		true
+	createdScale = true
 end
 
 local originalScale =
@@ -908,8 +820,7 @@ local blackIn =
 		),
 
 		{
-			BackgroundTransparency =
-				0
+			BackgroundTransparency = 0
 		}
 	)
 
@@ -918,11 +829,10 @@ blackIn:Play()
 
 zoomIn.Completed:Wait()
 
-blackScreen.BackgroundTransparency =
-	0
+blackScreen.BackgroundTransparency = 0
 
 --==================================================
--- MOVE WHOLE CHARACTER
+-- MOVE ENTIRE CHARACTER TOGETHER
 --==================================================
 
 local originalCharacterPosition =
@@ -983,9 +893,7 @@ musicPlayer.Parent =
 --==================================================
 
 local pitchShift =
-	Instance.new(
-		"PitchShiftSoundEffect"
-	)
+	Instance.new("PitchShiftSoundEffect")
 
 pitchShift.Octave =
 	0
@@ -994,9 +902,7 @@ pitchShift.Parent =
 	musicPlayer
 
 local distortion =
-	Instance.new(
-		"DistortionSoundEffect"
-	)
+	Instance.new("DistortionSoundEffect")
 
 distortion.Level =
 	0
@@ -1008,14 +914,9 @@ distortion.Parent =
 -- AUDIO STATE
 --==================================================
 
-local loadedAudioId =
-	""
-
-local musicActive =
-	false
-
-local playing =
-	false
+local loadedAudioId = ""
+local musicActive = false
+local playing = false
 
 --==================================================
 -- STOP GAME AUDIO
@@ -1024,13 +925,11 @@ local playing =
 local function stopGameSounds()
 
 	for _, name in ipairs({
-
 		"Amb",
 		"Level1",
 		"Level2",
 		"GameOver",
 		"Final"
-
 	}) do
 
 		local sound =
@@ -1039,12 +938,11 @@ local function stopGameSounds()
 				true
 			)
 
-		if sound
-			and sound:IsA("Sound") then
+		if sound and sound:IsA("Sound") then
 
 			sound:Stop()
-			sound.Volume =
-				0
+			sound.Volume = 0
+
 		end
 	end
 end
@@ -1053,7 +951,7 @@ end
 -- DJ STUDIO
 --==================================================
 
-local studio =
+studio =
 	mainUI:FindFirstChild(
 		"C9HZZAudioStudio"
 	)
@@ -1070,18 +968,14 @@ studio.Name =
 
 studio.Size =
 	UDim2.new(
-		1,
-		0,
-		0,
-		265
+		1, 0,
+		0, 265
 	)
 
 studio.Position =
 	UDim2.new(
-		0,
-		0,
-		1,
-		-265
+		0, 0,
+		1, -265
 	)
 
 studio.BackgroundColor3 =
@@ -1116,18 +1010,14 @@ local titleBar =
 
 titleBar.Size =
 	UDim2.new(
-		1,
-		0,
-		0,
-		28
+		1, 0,
+		0, 28
 	)
 
 titleBar.Position =
 	UDim2.new(
-		0,
-		0,
-		0,
-		0
+		0, 0,
+		0, 0
 	)
 
 titleBar.BackgroundColor3 =
@@ -1251,93 +1141,68 @@ closeButton.Parent =
 -- DRAGGING
 --==================================================
 
-local dragging =
-	false
-
+local dragging = false
 local dragStart
 local startPosition
 
-titleBar.InputBegan:Connect(
-	function(input)
+titleBar.InputBegan:Connect(function(input)
 
-		if input.UserInputType ==
-			Enum.UserInputType.MouseButton1
-			or input.UserInputType ==
-			Enum.UserInputType.Touch then
+	if input.UserInputType ==
+		Enum.UserInputType.MouseButton1
+		or input.UserInputType ==
+		Enum.UserInputType.Touch then
 
-			dragging =
-				true
-
-			dragStart =
-				input.Position
-
-			startPosition =
-				studio.Position
-		end
+		dragging = true
+		dragStart = input.Position
+		startPosition = studio.Position
 	end
-)
+end)
 
-titleBar.InputEnded:Connect(
-	function(input)
+titleBar.InputEnded:Connect(function(input)
 
-		if input.UserInputType ==
-			Enum.UserInputType.MouseButton1
-			or input.UserInputType ==
-			Enum.UserInputType.Touch then
+	if input.UserInputType ==
+		Enum.UserInputType.MouseButton1
+		or input.UserInputType ==
+		Enum.UserInputType.Touch then
 
-			dragging =
-				false
-		end
+		dragging = false
 	end
-)
+end)
 
-UserInputService.InputChanged:Connect(
-	function(input)
+UserInputService.InputChanged:Connect(function(input)
 
-		if not dragging then
-			return
-		end
-
-		if input.UserInputType ~=
-			Enum.UserInputType.MouseMovement
-			and input.UserInputType ~=
-			Enum.UserInputType.Touch then
-
-			return
-		end
-
-		local delta =
-			input.Position -
-			dragStart
-
-		studio.Position =
-			UDim2.new(
-
-				startPosition.X.Scale,
-
-				startPosition.X.Offset +
-					delta.X,
-
-				startPosition.Y.Scale,
-
-				startPosition.Y.Offset +
-					delta.Y
-			)
+	if not dragging then
+		return
 	end
-)
 
-closeButton.Activated:Connect(
-	function()
+	if input.UserInputType ~=
+		Enum.UserInputType.MouseMovement
+		and input.UserInputType ~=
+		Enum.UserInputType.Touch then
 
-		musicActive =
-			false
-
-		musicPlayer:Stop()
-
-		studio.Visible =
-			false
+		return
 	end
-)
+
+	local delta =
+		input.Position -
+		dragStart
+
+	studio.Position =
+		UDim2.new(
+			startPosition.X.Scale,
+			startPosition.X.Offset + delta.X,
+			startPosition.Y.Scale,
+			startPosition.Y.Offset + delta.Y
+		)
+end)
+
+closeButton.Activated:Connect(function()
+
+	musicActive = false
+	musicPlayer:Stop()
+
+	studio.Visible = false
+end)
 
 --==================================================
 -- WORK AREA
@@ -1348,18 +1213,14 @@ local workArea =
 
 workArea.Size =
 	UDim2.new(
-		1,
-		-10,
-		1,
-		-35
+		1, -10,
+		1, -35
 	)
 
 workArea.Position =
 	UDim2.new(
-		0,
-		5,
-		0,
-		33
+		0, 5,
+		0, 33
 	)
 
 workArea.BackgroundColor3 =
@@ -1394,18 +1255,14 @@ local sourcePanel =
 
 sourcePanel.Size =
 	UDim2.new(
-		0.24,
-		-8,
-		1,
-		-10
+		0.24, -8,
+		1, -10
 	)
 
 sourcePanel.Position =
 	UDim2.new(
-		0,
-		5,
-		0,
-		5
+		0, 5,
+		0, 5
 	)
 
 sourcePanel.BackgroundColor3 =
@@ -1429,18 +1286,14 @@ local visualPanel =
 
 visualPanel.Size =
 	UDim2.new(
-		0.52,
-		-8,
-		1,
-		-10
+		0.52, -8,
+		1, -10
 	)
 
 visualPanel.Position =
 	UDim2.new(
-		0.24,
-		4,
-		0,
-		5
+		0.24, 4,
+		0, 5
 	)
 
 visualPanel.BackgroundColor3 =
@@ -1464,18 +1317,14 @@ local controlPanel =
 
 controlPanel.Size =
 	UDim2.new(
-		0.24,
-		-8,
-		1,
-		-10
+		0.24, -8,
+		1, -10
 	)
 
 controlPanel.Position =
 	UDim2.new(
-		0.76,
-		3,
-		0,
-		5
+		0.76, 3,
+		0, 5
 	)
 
 controlPanel.BackgroundColor3 =
@@ -1498,14 +1347,7 @@ controlPanel.Parent =
 -- UI HELPERS
 --==================================================
 
-local function winLabel(
-	parent,
-	text,
-	x,
-	y,
-	w,
-	h
-)
+local function winLabel(parent, text, x, y, w, h)
 
 	local label =
 		Instance.new("TextLabel")
@@ -1553,13 +1395,7 @@ local function winLabel(
 	return label
 end
 
-local function winBox(
-	parent,
-	placeholder,
-	x,
-	y,
-	w
-)
+local function winBox(parent, placeholder, x, y, w)
 
 	local box =
 		Instance.new("TextBox")
@@ -1643,13 +1479,7 @@ local function winBox(
 	return box
 end
 
-local function winButton(
-	parent,
-	text,
-	x,
-	y,
-	w
-)
+local function winButton(parent, text, x, y, w)
 
 	local button =
 		Instance.new("TextButton")
@@ -1794,11 +1624,10 @@ local status =
 		70
 	)
 
-status.TextWrapped =
-	true
+status.TextWrapped = true
 
 --==================================================
--- CENTER VISUALIZER
+-- VISUALIZER
 --==================================================
 
 local visualTitle =
@@ -1829,10 +1658,8 @@ visualizer.Position =
 
 visualizer.Size =
 	UDim2.new(
-		1,
-		-20,
-		0,
-		110
+		1, -20,
+		0, 110
 	)
 
 visualizer.BackgroundColor3 =
@@ -1859,18 +1686,14 @@ local waveformLine =
 
 waveformLine.Size =
 	UDim2.new(
-		1,
-		-20,
-		0,
-		1
+		1, -20,
+		0, 1
 	)
 
 waveformLine.Position =
 	UDim2.new(
-		0,
-		10,
-		0.5,
-		0
+		0, 10,
+		0.5, 0
 	)
 
 waveformLine.BackgroundColor3 =
@@ -1890,9 +1713,7 @@ waveformLine.Parent =
 	visualizer
 
 local bars = {}
-
-local BAR_COUNT =
-	64
+local BAR_COUNT = 64
 
 for i = 1, BAR_COUNT do
 
@@ -1915,8 +1736,7 @@ for i = 1, BAR_COUNT do
 
 	bar.Position =
 		UDim2.new(
-			(i - 1) /
-				BAR_COUNT,
+			(i - 1) / BAR_COUNT,
 			0,
 			1,
 			-8
@@ -1972,10 +1792,8 @@ progressBackground.Position =
 
 progressBackground.Size =
 	UDim2.new(
-		1,
-		-20,
-		0,
-		10
+		1, -20,
+		0, 10
 	)
 
 progressBackground.BackgroundColor3 =
@@ -1999,10 +1817,8 @@ local progressFill =
 
 progressFill.Size =
 	UDim2.new(
-		0,
-		0,
-		1,
-		0
+		0, 0,
+		1, 0
 	)
 
 progressFill.BackgroundColor3 =
@@ -2163,10 +1979,7 @@ local resetButton =
 -- AUDIO CONTROLS
 --==================================================
 
-local function number(
-	boxObject,
-	fallback
-)
+local function number(boxObject, fallback)
 
 	local n =
 		tonumber(
@@ -2184,40 +1997,28 @@ local function applyControls()
 
 	musicPlayer.Volume =
 		math.clamp(
-			number(
-				volumeBox,
-				1
-			),
+			number(volumeBox, 1),
 			0,
 			1
 		)
 
 	musicPlayer.PlaybackSpeed =
 		math.clamp(
-			number(
-				speedBox,
-				1
-			),
+			number(speedBox, 1),
 			0.05,
 			20
 		)
 
 	pitchShift.Octave =
 		math.clamp(
-			number(
-				pitchBox,
-				0
-			),
+			number(pitchBox, 0),
 			-4,
 			4
 		)
 
 	distortion.Level =
 		math.clamp(
-			number(
-				distortionBox,
-				0
-			),
+			number(distortionBox, 0),
 			0,
 			1
 		)
@@ -2225,10 +2026,7 @@ local function applyControls()
 	local position =
 		math.max(
 			0,
-			number(
-				timeBox,
-				0
-			)
+			number(timeBox, 0)
 		)
 
 	if musicPlayer.TimeLength > 0 then
@@ -2254,20 +2052,11 @@ applyButton.Activated:Connect(
 resetButton.Activated:Connect(
 	function()
 
-		volumeBox.Text =
-			"1"
-
-		speedBox.Text =
-			"1"
-
-		pitchBox.Text =
-			"0"
-
-		distortionBox.Text =
-			"0"
-
-		timeBox.Text =
-			"0"
+		volumeBox.Text = "1"
+		speedBox.Text = "1"
+		pitchBox.Text = "0"
+		distortionBox.Text = "0"
+		timeBox.Text = "0"
 
 		applyControls()
 
@@ -2277,13 +2066,11 @@ resetButton.Activated:Connect(
 )
 
 for _, boxObject in ipairs({
-
 	volumeBox,
 	speedBox,
 	pitchBox,
 	distortionBox,
 	timeBox
-
 }) do
 
 	boxObject.FocusLost:Connect(
@@ -2346,11 +2133,8 @@ local function loadAudio()
 			id
 	end
 
-	musicActive =
-		false
-
-	playing =
-		false
+	musicActive = false
+	playing = false
 
 	musicPlayer:Stop()
 
@@ -2378,14 +2162,12 @@ local function loadAudio()
 
 	if not musicPlayer.IsLoaded then
 
-		local loaded =
-			false
+		local loaded = false
 
 		local connection =
 			musicPlayer.Loaded:Connect(
 				function()
-					loaded =
-						true
+					loaded = true
 				end
 			)
 
@@ -2394,12 +2176,9 @@ local function loadAudio()
 
 		while not loaded
 			and not musicPlayer.IsLoaded
-			and os.clock() -
-				started < 12 do
+			and os.clock() - started < 12 do
 
-			task.wait(
-				0.1
-			)
+			task.wait(0.1)
 		end
 
 		connection:Disconnect()
@@ -2421,9 +2200,7 @@ local function loadAudio()
 		return false
 	end
 
-	task.wait(
-		0.25
-	)
+	task.wait(0.25)
 
 	if musicPlayer.TimeLength <= 0 then
 
@@ -2492,11 +2269,8 @@ local function playMusic()
 
 	musicPlayer:Play()
 
-	musicActive =
-		true
-
-	playing =
-		true
+	musicActive = true
+	playing = true
 
 	status.Text =
 		"STATUS: PLAYING"
@@ -2508,9 +2282,7 @@ end
 local function pauseMusic()
 
 	musicPlayer:Pause()
-
-	playing =
-		false
+	playing = false
 
 	visualStatus.Text =
 		"PAUSED"
@@ -2520,11 +2292,8 @@ local function stopMusic()
 
 	musicPlayer:Stop()
 
-	musicActive =
-		false
-
-	playing =
-		false
+	musicActive = false
+	playing = false
 
 	status.Text =
 		"STATUS: STOPPED"
@@ -2545,14 +2314,10 @@ local function restartMusic()
 		0
 
 	applyControls()
-
 	musicPlayer:Play()
 
-	musicActive =
-		true
-
-	playing =
-		true
+	musicActive = true
+	playing = true
 
 	visualStatus.Text =
 		"RESTARTED"
@@ -2598,7 +2363,6 @@ loopButton.Activated:Connect(
 			musicPlayer.Looped
 			and "LOOP: ON"
 			or "LOOP: OFF"
-
 	end
 )
 
@@ -2611,7 +2375,6 @@ progressBackground.InputBegan:Connect(
 
 		if input.UserInputType ~=
 			Enum.UserInputType.MouseButton1 then
-
 			return
 		end
 
@@ -2626,7 +2389,7 @@ progressBackground.InputBegan:Connect(
 		local ratio =
 			math.clamp(
 				x /
-				progressBackground.AbsoluteSize.X,
+					progressBackground.AbsoluteSize.X,
 				0,
 				1
 			)
@@ -2641,45 +2404,37 @@ progressBackground.InputBegan:Connect(
 -- VISUALIZER
 --==================================================
 
-local visualTime =
-	0
+local visualTime = 0
 
 RunService.RenderStepped:Connect(
 	function(dt)
 
-		visualTime +=
-			dt
+		visualTime += dt
 
-		local loudness =
-			0
+		local loudness = 0
 
 		if musicPlayer.IsPlaying then
 
-			pcall(
-				function()
+			pcall(function()
 
-					loudness =
-						math.clamp(
-							musicPlayer.PlaybackLoudness /
-								300,
-							0,
-							1
-						)
-				end
-			)
+				loudness =
+					math.clamp(
+						musicPlayer.PlaybackLoudness /
+							300,
+						0,
+						1
+					)
+
+			end)
 		end
 
-		for i, bar in ipairs(
-			bars
-		) do
+		for i, bar in ipairs(bars) do
 
 			local wave =
 				(
 					math.sin(
-						visualTime *
-							4 +
-						i *
-							0.45
+						visualTime * 4 +
+						i * 0.45
 					)
 					+ 1
 				) * 0.5
@@ -2687,10 +2442,8 @@ RunService.RenderStepped:Connect(
 			local wave2 =
 				(
 					math.sin(
-						visualTime *
-							7 -
-						i *
-							0.25
+						visualTime * 7 -
+						i * 0.25
 					)
 					+ 1
 				) * 0.5
@@ -2704,18 +2457,15 @@ RunService.RenderStepped:Connect(
 					loudness *
 					(
 						0.2 +
-						wave *
-							0.5 +
-						wave2 *
-							0.2
+						wave * 0.5 +
+						wave2 * 0.2
 					)
 
 			else
 
 				height =
 					0.04 +
-					wave *
-						0.04
+					wave * 0.04
 			end
 
 			height =
@@ -2727,9 +2477,7 @@ RunService.RenderStepped:Connect(
 
 			bar.Size =
 				UDim2.new(
-					1 /
-						BAR_COUNT *
-						0.7,
+					1 / BAR_COUNT * 0.7,
 					0,
 					height,
 					0
@@ -2748,15 +2496,13 @@ RunService.RenderStepped:Connect(
 				string.format(
 					"%02d:%02d / %02d:%02d",
 					math.floor(
-						current /
-							60
+						current / 60
 					),
 					math.floor(
 						current
 					) % 60,
 					math.floor(
-						total /
-							60
+						total / 60
 					),
 					math.floor(
 						total
@@ -2766,8 +2512,7 @@ RunService.RenderStepped:Connect(
 			progressFill.Size =
 				UDim2.new(
 					math.clamp(
-						current /
-							total,
+						current / total,
 						0,
 						1
 					),
@@ -2808,9 +2553,7 @@ local audioLock =
 
 characterMoveTween.Completed:Wait()
 
-task.wait(
-	0.75
-)
+task.wait(0.75)
 
 --==================================================
 -- REVEAL
@@ -2818,15 +2561,12 @@ task.wait(
 
 local zoomOut =
 	TweenService:Create(
-
 		zoomScale,
-
 		TweenInfo.new(
 			1.8,
 			Enum.EasingStyle.Sine,
 			Enum.EasingDirection.Out
 		),
-
 		{
 			Scale =
 				originalScale
@@ -2835,15 +2575,12 @@ local zoomOut =
 
 local blackOut =
 	TweenService:Create(
-
 		blackScreen,
-
 		TweenInfo.new(
 			1.8,
 			Enum.EasingStyle.Sine,
 			Enum.EasingDirection.Out
 		),
-
 		{
 			BackgroundTransparency =
 				1
@@ -2857,15 +2594,10 @@ blackOut.Completed:Wait()
 
 blackScreen:Destroy()
 
-if createdScale
-	and zoomScale then
-
+if createdScale and zoomScale then
 	zoomScale:Destroy()
-
 else
-
-	zoomScale.Scale =
-		originalScale
+	zoomScale.Scale = originalScale
 end
 
 --==================================================
@@ -2906,8 +2638,7 @@ forceMainUILayering()
 -- UNLOCK
 --==================================================
 
-interactionLocked =
-	false
+interactionLocked = false
 
 if guiLockConnection then
 	guiLockConnection:Disconnect()
@@ -2926,8 +2657,7 @@ restoreGui()
 player.CharacterRemoving:Connect(
 	function()
 
-		musicActive =
-			false
+		musicActive = false
 
 		if audioLock then
 			audioLock:Disconnect()
@@ -2939,9 +2669,7 @@ player.CharacterRemoving:Connect(
 			musicPlayer:Destroy()
 		end
 
-		if studio
-			and studio.Parent then
-
+		if studio and studio.Parent then
 			studio:Destroy()
 		end
 
